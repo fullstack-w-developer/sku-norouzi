@@ -26,20 +26,20 @@ export const signUpSchema = Yup.object({
     last_name: Yup.string()
         .required("لطفا نام‌خانوادگی خود را وارد کنید")
         .matches(/^[\u0600-\u06FF\s]+$/, "لطفا نام‌خانوادگی خود را به فارسی وارد کنید"),
-    student_number: Yup.number().required("لطفا شماره دانشجویی خود را وارد کنید"),
+    student_number: Yup.string().matches(/^\d+$/, "شماره دانشجویی صحیح نیست").required("لطفا شماره دانشجویی خود را وارد کنید"),
 
     email: Yup.string().email("فرمت ایمیل صحیح نیست").required("لطفا ایمیل خود را وارد کنید"),
     password: Yup.string()
         .required("لطفا رمز عبور خود را وارد کنید")
-        .matches(/^(?=.*[a-z])(?=.*[0-9])(?=.{8,})/, " رمز عبور باید حداقل 8 کاراکتر، انگلیسی و شامل حروف و اعداد باشد"),
+        .matches(/^[A-Za-z0-9]*$/, " رمز عبور باید حداقل 8 کاراکتر، انگلیسی و شامل حروف و اعداد باشد"),
     repPassword: Yup.string()
         .required("لطفا تکرار رمز عبور خود را وارد کنید")
         .oneOf([Yup.ref("password"), null], "رمز عبور با تکرار آن مطابقت ندارد"),
 });
 
 export const signInSchema = Yup.object({
-    student_number: Yup.number().required("لطفا شماره دانشجویی خود را وارد کنید"),
-    password: Yup.string().required("لطفا رمز عبور خود را وارد کنید"),
+    student_number: Yup.string().matches(/^\d+$/, "شماره دانشجویی صحیح نیست").required("لطفا شماره دانشجویی خود را وارد کنید"),
+    password: Yup.string().trim().matches(/^[A-Za-z0-9]*$/, "رمز عبور باید شما اعداد و حروف انگلیسی باشد").required("لطفا رمز عبور خود را وارد کنید"),
 });
 export const forgetPassSchema = Yup.object({
     email: Yup.string().email("فرمت ایمیل صحیح نیست").required("لطفا ایمیل خود را وارد کنید"),
