@@ -91,7 +91,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     });
 
     const count = await countWaitingUsers.json();
-    console.log(count, "jjjjjjjjjjjjjjjjjjjjjjjjjjjjj");
     const result = await res.json();
 
     return {

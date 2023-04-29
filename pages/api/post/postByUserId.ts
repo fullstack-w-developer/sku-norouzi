@@ -26,7 +26,7 @@ const getPostById = async (req: NextApiRequest, res: NextApiResponse) => {
         const userId = req.query.userId;
         const user = await User.findById(userId);
         const posts = await Posts.find({
-            userId,
+            masterId: userId,
             status: "success",
         }).populate(
             "userId",

@@ -52,7 +52,7 @@ const CardPost = ({ post, posts, sender }: Props) => {
             if (data.status) {
                 setComments(data.data.comments);
             }
-        } catch (error) {}
+        } catch (error) { }
     }
     const onClick = ({ key }: any, post: typePost) => {
         if (!isToken) return router.push("/auth/signin");
@@ -238,6 +238,7 @@ const CardPost = ({ post, posts, sender }: Props) => {
                         <span>فرستادن</span>
                     </p>
                 </div>
+                <p className="font-yekanBold text-gray-500 text-[12px] pt-3">عنوان : {post.title}</p>
                 <div onClick={() => setOpen(!open)} className="text-xs flex gap-2 py-2 font-yekanBold">
                     <p className="text-gray-500">توضیحات:</p>
                     <p className="whitespace-nowrap !w-[80%] overflow-hidden text-ellipsis">{post.description} </p>

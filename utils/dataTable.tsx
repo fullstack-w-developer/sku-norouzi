@@ -23,7 +23,7 @@ export const columns: ColumnsType<typeUser> = [
     },
     {
         key: "student_number",
-        title: "کد پرسنلی",
+        title: "شماره دانشجویی",
         dataIndex: "student_number",
         render: (student_number) => (
             <>
@@ -40,16 +40,6 @@ export const columns: ColumnsType<typeUser> = [
                 {" "}
                 {PN.convertEnToPe(moment(createdAt, "YYYY/MM/DD").locale("fa").format("YYYY/MM/DD"))}
             </span>
-        ),
-    },
-    {
-        title: "تعداد پروژه ها",
-        key: "count_project",
-        dataIndex: "count_project",
-        render: (text) => (
-            <Tag color="purple" className="font-ExtraBold !whitespace-nowrap">
-                {PN.convertEnToPe(text)}
-            </Tag>
         ),
     },
     {

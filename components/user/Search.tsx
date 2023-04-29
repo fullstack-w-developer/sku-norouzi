@@ -43,7 +43,7 @@ const Search = () => {
                             value={search}
                             onClick={() => setShowMenu(true)}
                             onChange={onChange}
-                            placeholder="جستجو برا اساس نام کاربری و نام استاد"
+                            placeholder="جستجو بر اساس نام پروژه و نام کاربری"
                             className="w-full flex-1 outline-none px-2 bg-[#F9F9F9] text-xs h-9 border rounded-lg"
                         />
                         <div

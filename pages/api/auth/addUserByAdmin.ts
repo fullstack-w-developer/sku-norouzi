@@ -32,12 +32,21 @@ const signupUser = async (req: NextApiRequest, res: NextApiResponse) => {
             res.status(403).json({
                 message: "شما اجازه دسترسی به این قسمت را ندارید",
             });
+
+        const studentNumber = await User.findOne({ student_number });
+        if (studentNumber)
+            return res.status(400).json({
+                message: "کد دانشجویی قبلا ثبت شده است"
+            });
+
         const isUser = await User.findOne({ email });
 
         if (isUser)
             return res.status(400).json({
                 message: "ایمیل وارد شده، قبلا ثبت شده است. لطفا ایمیل دیگری را وارد کنید",
             });
+
+
 
         // hash the password
         const salt = await bcrypt.genSalt(10);

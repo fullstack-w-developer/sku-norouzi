@@ -69,7 +69,7 @@ const TabPanel = ({ url, setUrl, setDataTable, itemsTab, role, title }: Props) =
                     value={search}
                     onChange={onChangeSearch}
                     className="w-full text-xs px-2 outline-none"
-                    placeholder="بر اساس ایمیل، نام، نام‌خانوادگی جستجو کنید"
+                    placeholder="بر اساس شماره دانشجویی نام، نام‌خانوادگی جستجو کنید"
                 />
                 <div className="bg-blue-500 px-3 text-white flex justify-center items-center">
                     <BiSearch size={24} />

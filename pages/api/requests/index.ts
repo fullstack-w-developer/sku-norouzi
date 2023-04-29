@@ -45,7 +45,7 @@ const getWaitingUsers = async (req: NextApiRequest, res: NextApiResponse) => {
             },
             {
                 $match: {
-                    $or: [{ email: RegExp(q) }, { first_name: RegExp(q) }, { last_name: RegExp(q) }],
+                    $or: [{ student_number: RegExp(q) }, { first_name: RegExp(q) }, { last_name: RegExp(q) }],
                 },
             },
             {

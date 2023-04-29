@@ -36,7 +36,14 @@ export default withAuth(handler);
 const updateProfile = async (req: any, res: any) => {
     try {
         let fileAdress: any = {};
-        const storage = multer.memoryStorage();
+        const storage = multer.diskStorage({
+            destination: "public/uploads",
+            filename: function (req, file, cb) {
+                const uniqueSuffix = `${Date.now() + "-" + Math.round(Math.random() * 1e9)
+                    }${file.originalname}`;
+                cb(null, file.fieldname + "-" + uniqueSuffix);
+            },
+        });;
         const upload = multer({ storage: storage }).single("file");
 
         await upload(req, res, async (err) => {
@@ -50,23 +57,12 @@ const updateProfile = async (req: any, res: any) => {
             }
 
             if (req.file) {
-                const createFile = await drive.files.create({
-                    requestBody: {
-                        name: req.file.originalname!,
-                        mimeType: req?.file.mimetype!,
-                        parents: ["12_LODZQ5udDSexdO1jTfqfhlPHJRaNSU"],
-                    },
-                    media: {
-                        mimeType: req?.file.mimetype,
-                        body: bufferToStream(req?.file.buffer),
-                    },
-                });
-
-                const link = await getUrl(createFile.data.id!);
-                fileAdress["profile"] = {
-                    url: link.data.webContentLink,
-                    id: createFile.data.id!,
-                };
+                req.file = {
+                    profile: {
+                        url: `${process.env.BASESERVER}/uploads/${req.file.filename}`,
+                        id: "1"
+                    }
+                }
             }
 
             if (req.body.profileId) {
@@ -78,7 +74,7 @@ const updateProfile = async (req: any, res: any) => {
             const user = await User.findByIdAndUpdate(
                 { _id: id },
                 {
-                    ...fileAdress,
+                    ...req.file,
                     ...req.body,
                 },
                 { new: true }
