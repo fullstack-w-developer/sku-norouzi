@@ -8,10 +8,9 @@ const Logo = () => {
             <div className="relative w-[350px] h-[70px] lg:h-[100px]">
                 <Image src={Sku} alt="" fill />
             </div>
-            <h1 className="text-2xl hidden lg:block text-center text-gray-600 pt-5 font-ExtraBold">دانشگاه شهر کرد</h1>
+            <h1 className="text-lg hidden lg:block text-center text-gray-600 pt-5 font-ExtraBold">وبسایت مدیریت پروژه‌های دانشجویان دانشگاه شهرکرد</h1>
             <div className="pt-14 hidden lg:flex flex-col justify-center items-center">
-                <RiShieldKeyholeFill size={62} className="text-gray-800" />
-                <p className="text-xs pt-2 text-gray-400">توضیه میگردد رمز عبور خود را به طور متناوب تعیر دهید</p>
+                <p className="text-xs pt-2 text-gray-400">تمامی حقوق این وبسایت متعلق به <span className="text-blue-500">دانشگاه شهرکرد</span>است</p>
             </div>
         </div>
     );

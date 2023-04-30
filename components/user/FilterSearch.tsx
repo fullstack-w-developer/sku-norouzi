@@ -72,7 +72,7 @@ const FilterSearch = () => {
 
         router.push({
             query: { search: JSON.stringify(data) },
-            pathname: "/search",
+            pathname: "/search/result",
         });
         onClose();
     };
@@ -128,7 +128,7 @@ const FilterSearch = () => {
                         isClearable={false}
                         value={formData.technologies}
                         placeholder=" "
-                        className="w-full"
+                        className="w-full ltr"
                         options={listTechnologies}
                         getOptionValue={(option: any) => option._id}
                         getOptionLabel={(option: any) => option.name}

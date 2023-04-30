@@ -126,14 +126,11 @@ const SherePost = ({ showSheare, setShowSheare, post }: Props) => {
                                         </div>
                                     </div>
                                     <button
-                                        disabled={sharePosts[0]?.reciveUsers.includes(user._id) ? true : false}
+                                        // disabled={sharePosts[0]?.reciveUsers.includes(user._id) ? true : false}
                                         onClick={() => clickSelect(user)}
                                         className=" bg-[#0096f5]  px-2 py-2 rounded-xl text-[10px] text-white font-yekanBold"
                                     >
-                                        {sharePosts[0]?.postId.includes(post._id) &&
-                                        sharePosts[0]?.reciveUsers.includes(user._id) ? (
-                                            <p>فرستاده شده</p>
-                                        ) : select.includes(user) ? (
+                                        { select.includes(user) ? (
                                             <div className="flex  items-center">
                                                 <BsCheck size={20} />
                                                 <p>انتخاب شد</p>

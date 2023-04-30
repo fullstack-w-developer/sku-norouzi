@@ -1,8 +1,8 @@
 import React from "react";
 import SearchMobile from "../../components/SearchMobile";
 
-const index = () => {
+const Search = () => {
     return <SearchMobile />;
 };
 
-export default index;
+export default Search;

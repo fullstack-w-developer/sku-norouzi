@@ -35,6 +35,7 @@ const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
                 $sort: { createdAt: -1 },
             },
             {
+
                 $match: {
                     $or: [
                         { first_name: RegExp(q!) },
@@ -42,6 +43,7 @@ const getAll = async (req: NextApiRequest, res: NextApiResponse) => {
                         { full_name: RegExp(q) },
                         { student_number: RegExp(q) },
                     ],
+                    status: "success"
                 },
             },
             {

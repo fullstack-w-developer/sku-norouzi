@@ -82,6 +82,7 @@ const CreateTechnology = ({ show, setShow, itemstechnology, setItemstechnology, 
                     <Spin spinning={loading}>
                         <form onSubmit={formik.handleSubmit} className="container_auth !mt-5">
                             <Input
+                                input_ltr="ltr"
                                 onChange={formik.handleChange}
                                 title="نام تکنولوژی"
                                 name="name"
