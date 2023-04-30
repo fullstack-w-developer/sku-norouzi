@@ -35,7 +35,7 @@ export default withAuth(handler);
 
 const updateProfile = async (req: any, res: any) => {
     try {
-        let fileAdress: any = {};
+        console.log("workkkkkkkkkkkkkkkkkkkkkkkkkk")
         const storage = multer.diskStorage({
             destination: "public/uploads",
             filename: function (req, file, cb) {
@@ -65,12 +65,7 @@ const updateProfile = async (req: any, res: any) => {
                 }
             }
 
-            if (req.body.profileId) {
-                await drive.files.delete({
-                    fileId: req.body.profileId,
-                });
-            }
-
+         
             const user = await User.findByIdAndUpdate(
                 { _id: id },
                 {
