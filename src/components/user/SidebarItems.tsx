@@ -1,17 +1,13 @@
 import { useState, useEffect } from "react";
 import { AiOutlineLogout } from "react-icons/ai";
-import { Divider, Image } from "antd";
 import { IoIosArrowBack } from "react-icons/io";
-import PN from "persian-number";
 import Link from "next/link";
 import { GrProjects } from "react-icons/gr";
 import { publicMenu } from "../../utils/data";
-import Cookies from "js-cookie";
 import { useRouter } from "next/router";
 import { useRecoilValue } from "recoil";
 import { userState } from "../../recoil/atom";
 import { routing } from "../../utils/routing";
-import { typeUser } from "../../tying";
 
 const SidebarItems = () => {
     const router = useRouter();
@@ -21,11 +17,7 @@ const SidebarItems = () => {
         setUserInfo(user);
     }, []);
 
-    const logout = () => {
-        Cookies.remove("token");
-        localStorage.clear();
-        router.push(routing.auth.login);
-    };
+    const logout = () => {};
 
     return (
         <div className="flex flex-col">

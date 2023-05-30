@@ -89,7 +89,7 @@ export const setCookie = async (cookies: SetCookieProps) => {
 export const itsUserProfile = async (id: string) => {
     try {
         const { user } = await getUser();
-        if (user.id.toString() === id) {
+        if (user._id.toString() === id) {
             return {
                 redirect: {
                     destination: "/dashboard/profile",

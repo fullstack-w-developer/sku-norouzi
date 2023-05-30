@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { mongodb_uri } from "../helpers/constants/env-variables";
 
 const connectDB = () => {
     if (mongoose.connections[0].readyState) {
@@ -7,7 +8,7 @@ const connectDB = () => {
     }
     mongoose.set("strictQuery", false);
     mongoose
-        .connect(process.env.MONGODB_URI!)
+        .connect(mongodb_uri)
         .then(() => {
             console.log("connected DB");
         })

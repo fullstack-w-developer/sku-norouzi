@@ -1,59 +1,25 @@
-import { message, Spin } from "antd";
+import { Spin } from "antd";
 import { useFormik } from "formik";
-import Cookies from "js-cookie";
-import { GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import { BsLockFill } from "react-icons/bs";
 import { MdEmail } from "react-icons/md";
-import { setRecoil } from "recoil-nexus";
 import ForgetPass from "../../components/user/ForgetPass";
 import Input from "../../components/user/Input";
 import Logo from "../../components/user/Logo";
-import { userState } from "../../recoil/atom";
-import fetchClient from "../../utils/fetchClient";
 import { signInSchema, signInValues } from "../../utils/validation";
 import { typeSignInAccount } from "../../../tying";
+import useSignInMutation from "../../hooks/mutation/auth/useSignInMutation";
 
 const Signin = () => {
-    const [loading, setLoading] = useState(false);
-    const [messageApi, contextHolder] = message.useMessage();
+    const { isLoading, mutate } = useSignInMutation();
     const [showForgetPass, setShowForgetPass] = useState(false);
-    const router = useRouter();
     const formik = useFormik({
         initialValues: signInValues,
         validationSchema: signInSchema,
         onSubmit: async (values: typeSignInAccount) => {
-            try {
-                setLoading(true);
-                const { data } = await fetchClient.post("auth/signin", values);
-                if (data.status) {
-                    Cookies.set("token", data.token);
-                    messageApi.open({
-                        type: "success",
-                        duration: 5,
-                        content: "با موفقیت وارد شدید",
-                        className: "fixed left-0 top-[10vh] font-yekanBold !text-xs !py-4",
-                    });
-                    setRecoil(userState, data.data.user);
-                }
-                setLoading(false);
-                if (data.data.user.role === "USER" || data.data.user.role === "MASTER") {
-                    router.push("/");
-                } else {
-                    router.push("/admin");
-                }
-            } catch (error: any) {
-                setLoading(false);
-                messageApi.open({
-                    type: "error",
-                    duration: 5,
-                    content: error.response.data.message!,
-                    className: "fixed left-0 top-[10vh] font-yekanBold !text-xs !py-4",
-                });
-            }
+            mutate(values);
         },
     });
 
@@ -62,7 +28,6 @@ const Signin = () => {
             <Head>
                 <title>دانشگاه شهر کرد | ورود</title>
             </Head>
-            {contextHolder}
             <div className="flex flex-col mt-20 lg:mt-0 lg:justify-between lg:flex-row items-center lg:h-screen mx-auto w-full lg:!w-[70%]">
                 <Logo />
                 <div className=" lg:min-w-[450px] mt-10 lg:mt-10">
@@ -70,7 +35,7 @@ const Signin = () => {
                     <p className="text-xs  text-center pt-2 pb-10 lg:pb-0">
                         جهت ورود به سیستم نام کاربری و رمز عبور خود را وارد نمایید.
                     </p>
-                    <Spin spinning={loading}>
+                    <Spin spinning={isLoading}>
                         <form onSubmit={formik.handleSubmit} className="container_auth w-full">
                             <Input
                                 onChange={formik.handleChange}

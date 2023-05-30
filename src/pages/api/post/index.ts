@@ -3,6 +3,7 @@ import type { NextApiResponse } from "next";
 import Posts from "../../../../models/post";
 import connectDB from "../../../utils/connectDB";
 import { NextApiReq } from "../../../types/common";
+import { findProtect } from "../../../../middleware/findProtect";
 
 type Data = {
     message?: string;
@@ -12,7 +13,7 @@ type Data = {
 
 connectDB();
 
-export default async function handler(req: NextApiReq, res: NextApiResponse<Data>) {
+function handler(req: NextApiReq, res: NextApiResponse<Data>) {
     if (req.method === "GET") {
         getPosts(req, res);
     } else {
@@ -22,6 +23,7 @@ export default async function handler(req: NextApiReq, res: NextApiResponse<Data
         });
     }
 }
+
 const getPosts = async (req: NextApiReq, res: NextApiResponse) => {
     const skip = req?.query?.skip;
     const q: any = req.query?.q;
@@ -48,7 +50,16 @@ const getPosts = async (req: NextApiReq, res: NextApiResponse) => {
                     preserveNullAndEmptyArrays: true,
                 },
             },
-
+            {
+                $addFields: {
+                    isLiked: {
+                        $cond: [{ $in: [req.user?._id, "$liked"] }, true, false]
+                    },
+                    isBookmark: {
+                        $cond: [{ $in: [req.user?._id, "$saves"] }, true, false]
+                    }
+                }
+            },
             {
                 $match: {
                     $or: [
@@ -74,6 +85,7 @@ const getPosts = async (req: NextApiReq, res: NextApiResponse) => {
             },
         ]);
 
+
         res.status(200).json({ status: true, data: posts });
     } catch (error: any) {
         res.status(500).json({
@@ -82,3 +94,7 @@ const getPosts = async (req: NextApiReq, res: NextApiResponse) => {
         });
     }
 };
+
+
+
+export default findProtect(handler)

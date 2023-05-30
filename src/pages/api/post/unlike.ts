@@ -28,11 +28,11 @@ function handler(req: NextApiReq, res: NextApiResponse<Data>) {
 export default withAuth(handler);
 
 const updateLike = async (req: NextApiReq, res: NextApiResponse<Data>) => {
+    console.log(req.query)
     try {
         const updateLike = await Posts.findByIdAndUpdate(
             { _id: req.body.postId },
             {
-                // @ts-ignore
                 $pull: { liked: req.user._id },
             },
 

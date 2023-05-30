@@ -1,48 +1,24 @@
-import { useState } from "react";
 import { useFormik } from "formik";
 import Input from "../../components/user/Input";
 import { signUpSchema, signupValues } from "../../utils/validation";
 import { FaUserAlt, FaUserGraduate } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { BsLockFill } from "react-icons/bs";
-import { typeCreateAccount } from "../../tying";
-import { message, Spin } from "antd";
-import fetchClient from "../../utils/fetchClient";
+import { Spin } from "antd";
 import Link from "next/link";
 import Logo from "../../components/user/Logo";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import { SignUpFormData } from "../../types/Auth/Form";
+import useSignUpMutation from "../../hooks/mutation/auth/useSignupMutation";
 
 const Signup = () => {
-    const [loading, setLoading] = useState(false);
-    const [messageApi, contextHolder] = message.useMessage();
-    const router = useRouter();
-    const formik = useFormik({
+    const { isLoading, mutate } = useSignUpMutation();
+    const formik = useFormik<SignUpFormData>({
         initialValues: signupValues,
         validationSchema: signUpSchema,
-        onSubmit: async (values: typeCreateAccount) => {
-            try {
-                setLoading(true);
-                const { data } = await fetchClient.post("auth/signup", values);
-                if (data.status) {
-                    messageApi.open({
-                        type: "success",
-                        duration: 5,
-                        content: data.message,
-                        className: "fixed left-0 top-[10vh] font-yekanBold !text-xs !py-4",
-                    });
-                    router.push("/?new=true");
-                }
-                setLoading(false);
-            } catch (error: any) {
-                setLoading(false);
-                messageApi.open({
-                    type: "error",
-                    duration: 5,
-                    content: error.response.data.message!,
-                    className: "fixed left-0 top-[10vh] font-yekanBold !text-xs !py-4",
-                });
-            }
+        onSubmit: async (values) => {
+            mutate(values);
         },
     });
     return (
@@ -50,13 +26,11 @@ const Signup = () => {
             <Head>
                 <title>دانشگاه شهر کرد | ثبت نام</title>
             </Head>
-            {contextHolder}
             <Logo />
-
             <div className="w-[90%] mx-auto lg:mx-0 mt-14 lg:mt-0  lg:w-[450px]">
-                <h1 className="text-center text-xl text-gray-700 font-ExtraBold">ثبت نام</h1>
+                <h1 className="text-center text-xl text-gray-700 font-artinBlack">ثبت نام</h1>
                 <p className="text-xs text-center pt-2">جهت ثبت نام، مشخصات زیر را پر کنید</p>
-                <Spin spinning={loading}>
+                <Spin spinning={isLoading}>
                     <form onSubmit={formik.handleSubmit} className="container_auth">
                         <Input
                             onChange={formik.handleChange}

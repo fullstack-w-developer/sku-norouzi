@@ -10,7 +10,6 @@ import { typePost } from "../../tying";
 import FileSaver from "file-saver";
 import { useRecoilValue } from "recoil";
 import { userState } from "../../recoil/atom";
-import Cookies from "js-cookie";
 import { Router, useRouter } from "next/router";
 import fetchClient from "../../utils/fetchClient";
 import { RiEdit2Fill } from "react-icons/ri";
@@ -40,10 +39,6 @@ const CardPostProfile = ({ post, page, status, setDataProject }: Props) => {
     const [isToken, setIsToken] = useState<string | number>("");
 
     const userInfo = useRecoilValue(userState);
-    useEffect(() => {
-        const token = Cookies.get("token");
-        setIsToken(token!);
-    }, []);
 
     const items = [
         {

@@ -5,6 +5,7 @@ import connectDB from "../../../utils/connectDB";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { NextApiReq } from "../../../types/common";
+import { jwt_key, refresh_token } from "../../../helpers/constants/env-variables";
 
 type Data = {
     status?: boolean;
@@ -46,15 +47,19 @@ const signInUser = async (req: NextApiReq, res: NextApiResponse) => {
                 message: "حساب کاربری شما تائید نشده است، لطفا بعدا تلاش کنید",
             });
 
-        const token = jwt.sign({ id: user._id }, process.env.JWT_KEY!, {
-            expiresIn: "24h",
+        const access = jwt.sign({ id: user._id }, jwt_key, {
+            expiresIn: "6h",
         });
+        const refresh = jwt.sign({ id: user._id }, refresh_token);
 
         res.status(200).json({
             status: true,
-            token,
+
             message: "با موفقیت وارد شدید",
             data: {
+                expires_in: 21600,
+                refresh_token: refresh,
+                access_token: access,
                 user: {
                     _id: user._id,
                     email: user.email,

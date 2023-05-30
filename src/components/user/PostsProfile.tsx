@@ -1,8 +1,6 @@
 import { Spin } from "antd";
-import Cookies from "js-cookie";
 import { useState, useEffect } from "react";
 import useFetchMoreInfinteScroll from "../../hooks/useFetchMoreInfinteScroll";
-import fetchClient from "../../utils/fetchClient";
 import CardPostProfile from "./CardPostProfile";
 import InfiniteScroll from "./InfiniteScroll";
 interface Props {
@@ -47,10 +45,7 @@ const PostsProfile = ({ posts, setDataProject, status, page, setPage, loadPosts 
     //         setIsLoading(false);
     //     }
     // };
-    useEffect(() => {
-        const token = Cookies.get("token");
-        setIsToken(token!);
-    }, []);
+
     return (
         <>
             {loadPosts ? (
