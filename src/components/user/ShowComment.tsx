@@ -2,10 +2,11 @@ import { Modal } from "antd";
 import Image from "next/image";
 import React from "react";
 import { MdOutlineClose } from "react-icons/md";
+import { Comment } from "../../types/common";
 interface Props {
     open: boolean;
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    comments: [any];
+    comments: Comment[];
     description: string;
 }
 const ShowComment = ({ open, setOpen, comments, description }: Props) => {

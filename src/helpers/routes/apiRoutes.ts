@@ -10,7 +10,8 @@ const apiRoutes = {
             like:"/post/like",
             unlike:"/post/unlike",
             bookmark:"/post/addsave",
-            unBookmark:"/post/deletesavepost"
+            unBookmark:"/post/deletesavepost",
+            comment:"/post/addcomment"
         }
     }
 };

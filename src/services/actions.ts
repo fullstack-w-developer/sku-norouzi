@@ -24,3 +24,8 @@ export const UnBookmark = async (id: string) => {
     const data = {postId:id}
     return await client<PostEmptyResponseShape>({ url,method:"PUT" ,data});
 };
+
+export const addComment = async (data:{postId:string,comment:string}) => {
+    const url = getRoute({ route: routes.post.action.comment });
+    return await client<PostEmptyResponseShape>({ url,method:"PUT" ,data});
+};

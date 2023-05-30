@@ -1,5 +1,5 @@
-import { Dropdown, message, Image } from "antd";
-import React, { useState, useEffect } from "react";
+import { Dropdown, Image } from "antd";
+import React, { useState } from "react";
 import { AiOutlineHeart } from "react-icons/ai";
 import InputEmoji from "react-input-emoji";
 import { BsBookmark, BsBookmarkFill, BsHeartFill } from "react-icons/bs";
@@ -7,10 +7,9 @@ import { FaRegCommentDots } from "react-icons/fa";
 import { IoIosShareAlt } from "react-icons/io";
 import { MdMoreVert } from "react-icons/md";
 import ShowComment from "./ShowComment";
-import { typePost, typeUser } from "../../../tying";
+import { typePost } from "../../../tying";
 import FileSaver from "file-saver";
 import { useRouter } from "next/router";
-import fetchClient from "../../utils/fetchClient";
 import SherePost from "./SherePost";
 import Poster from "../../assets/image/videoposter.png";
 import ProfileInfo from "./ProfileInfo";
@@ -18,6 +17,8 @@ import { Post } from "../../types/Post";
 import useAuthStore from "../../stores/auth-store";
 import useLikeActionMutation from "../../hooks/mutation/actions/useLikeActionMutation";
 import useBookmarkActionMuation from "../../hooks/mutation/actions/useBookmarkActionMuation";
+import useAddCommentActionMuation from "../../hooks/mutation/actions/useAddCommentActionMuation";
+import { Comment } from "../../types/common";
 interface Props {
     post: Post;
 }
@@ -28,8 +29,7 @@ const items = [
     },
 ];
 const CardPost = ({ post }: Props) => {
-    const [messageApi, contextHolder] = message.useMessage();
-    const [comments, setComments] = useState<any>([]);
+    const [comments, setComments] = useState<Comment[]>(post.comments);
     const [open, setOpen] = useState(false);
     const [isBookmark, setIsBookmark] = useState(post.isBookmark);
     const [text, setText] = useState("");
@@ -41,15 +41,8 @@ const CardPost = ({ post }: Props) => {
     })
     const {mutate: likeAction,isLoading:loadingLike} = useLikeActionMutation({like,setState:setLike})
     const {mutate: bookmakAction,isLoading:loadingBookmark} = useBookmarkActionMuation({isBookmark,setState:setIsBookmark})
+    const {mutate:commentAction} = useAddCommentActionMuation({setState:setComments})
 
-    async function handleOnEnter(text: any) {
-        try {
-            const { data } = await fetchClient.put("/post/addcomment", { comment: text, postId: post._id });
-            if (data.status) {
-                setComments(data.data.comments);
-            }
-        } catch (error) { }
-    }
     const onClick = ({ key }: any, post: typePost) => {
         if (!user) return router.push("/auth/signin");
 
@@ -69,10 +62,7 @@ const CardPost = ({ post }: Props) => {
         bookmakAction(id)
     }
 
-   
-    useEffect(() => {
-        setComments(post.comments);
-    }, []);
+
 
     const sharePostForUser = () => {
         if (!user) return router.push("/auth/signin");
@@ -81,7 +71,6 @@ const CardPost = ({ post }: Props) => {
 
     return (
         <>
-            {contextHolder}
             <div className="!bg-white p-1 h-fit shadow-md border overflow-hidden border-gray-100 rounded-lg w-full">
                 <div className="flex justify-between items-center">
                     <ProfileInfo
@@ -190,7 +179,7 @@ const CardPost = ({ post }: Props) => {
                             value={text}
                             onChange={setText}
                             cleanOnEnter
-                            onEnter={handleOnEnter}
+                            onEnter={(comment:string)=>commentAction({postId:post._id, comment})}
                             placeholder="نوشتن متن"
                         />
                     </div>

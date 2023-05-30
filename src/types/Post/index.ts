@@ -1,7 +1,7 @@
-import { User } from "../common";
+import { Comment, User } from "../common";
 
 export type Post = {
-    comments: [];
+    comments: Comment[];
     createdAt: string;
     description: string;
     file: { url: string; id: string; type: "image" | "video" };
