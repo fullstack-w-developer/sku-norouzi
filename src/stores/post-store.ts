@@ -5,10 +5,10 @@ import { Post } from "../types/Post";
 
 interface PostStore {
     posts: {
-        posts: Post[]
-        total: number
-    },
-    setPosts: (posts: { posts: Post[], total: number }) => void
+        posts: Post[];
+        total: number;
+    };
+    setPosts: (posts: { posts: Post[]; total: number }) => void;
 }
 
 const usePostStore = create<PostStore>()(
@@ -16,17 +16,13 @@ const usePostStore = create<PostStore>()(
         immer((set) => ({
             posts: {
                 posts: [],
-                total: 0
+                total: 0,
             },
-           
 
-            setPosts: (posts: { posts: Post[], total: number }) => {
-                set(
-                    (state) => {
-                        state.posts = posts;
-                    },
-                    false,
-                );
+            setPosts: (posts: { posts: Post[]; total: number }) => {
+                set((state) => {
+                    state.posts = posts;
+                }, false);
             },
         }))
     )

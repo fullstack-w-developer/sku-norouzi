@@ -57,10 +57,10 @@ const FilterSearch = () => {
         }
     };
 
-    useEffect(() => {
-        getList();
-        getMasterName();
-    }, []);
+    // useEffect(() => {
+    //     getList();
+    //     getMasterName();
+    // }, []);
 
     const clickSearch = () => {
         const data = {

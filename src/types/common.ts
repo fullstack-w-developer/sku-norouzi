@@ -23,35 +23,26 @@ export interface AuthResponseShape {
     message: string;
 }
 
-
 export type Posts = {
     posts: Post[];
     total: number;
-
-}
-
-
+};
 
 export interface PostEmptyResponseShape {
     status: boolean;
     message: string;
-    data: Post
-    ;
+    data: Post;
 }
 
 export type Comment = {
-    comment
-    : 
-    string
-    full_name
-    : string
-    profile
-    : 
-    string
-    role
-    : 
-    "MASTER" | "USER" | "ADMIN"
-    _id
-    : 
-    string
-}
+    comment: string;
+    full_name: string;
+    profile: string;
+    role: "MASTER" | "USER" | "ADMIN";
+    _id: string;
+};
+
+export type typeShareMuation = {
+    postId: string;
+    reciveUsers: string[];
+};

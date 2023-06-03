@@ -4,7 +4,7 @@ import { getAllPost } from "../../../services/post";
 import usePostStore from "../../../stores/post-store";
 
 const useGetAllPostsQuery = () => {
-    const {setPosts} = usePostStore()
+    const { setPosts } = usePostStore();
     return useQuery([POST.ALL_POST], async () => await getAllPost(), {
         refetchOnReconnect: false,
         refetchOnMount: true,
@@ -12,9 +12,9 @@ const useGetAllPostsQuery = () => {
         onSuccess({ data }) {
             const posts = {
                 posts: data[0].paginatedResults,
-                total: data[0].totalCount[0].Total
-            }
-            setPosts(posts)
+                total: data[0].totalCount[0].Total,
+            };
+            setPosts(posts);
         },
     });
 };

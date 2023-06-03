@@ -15,7 +15,7 @@ interface Props {
 }
 const SideBarMenu = ({ user: userProfile, children }: Props) => {
     const openSideBarMobile = useRecoilValue(modalSidebarMobileState);
-    const {user} = useAuthStore()
+    const { user } = useAuthStore();
 
     return (
         <>

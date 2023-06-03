@@ -8,12 +8,12 @@ const SharepostSchema = new mongoose.Schema(
             required: true,
         },
         reciveUsers: {
-            type: [mongoose.Types.ObjectId],
+            type: mongoose.Types.ObjectId,
             ref: "user",
             required: true,
         },
         postId: {
-            type: [mongoose.Types.ObjectId],
+            type: mongoose.Types.ObjectId,
             ref: "post",
             required: true,
         },

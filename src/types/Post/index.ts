@@ -7,11 +7,11 @@ export type Post = {
     file: { url: string; id: string; type: "image" | "video" };
     liked: [];
     masterId: string;
-    isLiked:boolean;
+    isLiked: boolean;
     saves: [];
     status: "success";
     student: boolean;
-    isBookmark:boolean;
+    isBookmark: boolean;
     technologies: [];
     title: string;
     updatedAt: string;

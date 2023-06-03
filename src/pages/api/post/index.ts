@@ -53,12 +53,12 @@ const getPosts = async (req: NextApiReq, res: NextApiResponse) => {
             {
                 $addFields: {
                     isLiked: {
-                        $cond: [{ $in: [req.user?._id, "$liked"] }, true, false]
+                        $cond: [{ $in: [req.user?._id, "$liked"] }, true, false],
                     },
                     isBookmark: {
-                        $cond: [{ $in: [req.user?._id, "$saves"] }, true, false]
-                    }
-                }
+                        $cond: [{ $in: [req.user?._id, "$saves"] }, true, false],
+                    },
+                },
             },
             {
                 $match: {
@@ -85,7 +85,6 @@ const getPosts = async (req: NextApiReq, res: NextApiResponse) => {
             },
         ]);
 
-
         res.status(200).json({ status: true, data: posts });
     } catch (error: any) {
         res.status(500).json({
@@ -95,6 +94,4 @@ const getPosts = async (req: NextApiReq, res: NextApiResponse) => {
     }
 };
 
-
-
-export default findProtect(handler)
+export default findProtect(handler);

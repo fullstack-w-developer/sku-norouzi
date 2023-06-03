@@ -1,42 +1,24 @@
-import { Image, message, Modal, Spin } from "antd";
-import React, { useEffect, useState } from "react";
+import { Image, Modal, Spin } from "antd";
+import React, { useState } from "react";
 import { BiSearch } from "react-icons/bi";
 import { BsCheck } from "react-icons/bs";
 import { MdOutlineClose } from "react-icons/md";
-import { useMutation, useQuery } from "react-query";
-import { useRecoilValue } from "recoil";
-import { userState } from "../../recoil/atom";
-import { typePost, typeUser } from "../../tying";
-import fetchClient from "../../utils/fetchClient";
+import { Post } from "../../types/Post";
+import useGlobalStroe from "../../stores/global-store";
+import useGetAllUserQuery from "../../hooks/data/useGetAllUserQuery";
+import useSharepostActionMuation from "../../hooks/mutation/actions/useSharepostActionMuation";
+import useGetAllShearePostQuery from "../../hooks/query/post/useGetAllShearePostQuery";
 
 interface Props {
-    showSheare: boolean;
-    setShowSheare: React.Dispatch<React.SetStateAction<boolean>>;
-    post: typePost;
+    post: Post;
 }
-const SherePost = ({ showSheare, setShowSheare, post }: Props) => {
-    const [messageApi, contextHolder] = message.useMessage();
-    const [users, setUsers] = useState([]);
-    const [sharePosts, setsharePosts] = useState<any>([]);
+const SherePost = ({ post }: Props) => {
+    const { shareModal, toggleShare } = useGlobalStroe();
     const [select, setSelect] = useState<any>([]);
     const [search, setSearch] = useState("");
-    const userInfo = useRecoilValue(userState);
-    const getAllUser = async () => await fetchClient.get(`/user/all?q=${search}`);
-    const shareUsers = async () => {
-        const users = select.map((user: typeUser) => user._id);
-        return await fetchClient.post("/share/add", {
-            reciveUsers: JSON.stringify(users),
-            postId: post._id,
-        });
-    };
-
-    const fetchUser = useQuery(["all_users", search], () => getAllUser(), {
-        onSuccess: ({ data }) => {
-            setUsers(data.data.users);
-            setsharePosts(data.data.sharePosts);
-        },
-        refetchOnWindowFocus: false,
-    });
+    const { data, isLoading } = useGetAllUserQuery(search);
+    const { mutate: shareAction, isLoading: loadingshare } = useSharepostActionMuation();
+    const { data: sheare, isLoading: loadigSheare } = useGetAllShearePostQuery({ postId: post._id });
 
     const onChange = (_: React.ChangeEvent<HTMLInputElement>) => {
         setSearch(_.target.value);
@@ -50,53 +32,29 @@ const SherePost = ({ showSheare, setShowSheare, post }: Props) => {
             setSelect([...select, user]);
         }
     };
-    const mutate = useMutation(() => shareUsers(), {
-        onSuccess: async () => {
-            setShowSheare(!shareUsers);
-        },
-        onError: () => {
-            messageApi.open({
-                type: "error",
-                duration: 5,
-                content: "مشکلی در ارسال وجود دارد، لطفا بعدا تلاش کنید ",
-                className: "font-yekanBold !text-xs !py-4",
-            });
-        },
-    });
+
+    const sharePosts: any = sheare?.data.map((sh) => sh.reciveUsers);
 
     return (
         <>
             <Modal
                 centered
                 footer={false}
-                open={showSheare}
-                onCancel={() => setShowSheare(false)}
+                open={shareModal}
+                onCancel={toggleShare}
                 closeIcon={<MdOutlineClose className="text-gray-600 mr-1" />}
             >
-                {fetchUser.isLoading || fetchUser.isFetching ? (
-                    <div className="flex justify-center  mt-10">
-                        <Spin />
-                    </div>
-                ) : fetchUser.isError ? (
-                    <p className="text-center text-gray-700  font-yekanBold mt-10">
-                        مشکلی در گرفتن کاربران پیش آمده است، لطفا بعدا تلاش کنید
+                <div className="max-h-[500px] overflow-auto">
+                    <p className="text-center font-yekanBold text-gray-700 text-xl">
+                        لیست کاربران {isLoading || loadigSheare ? <Spin size="small" /> : null}
                     </p>
-                ) : (
-                    ""
-                )}
-                <div>
-                    <p className="text-center font-yekanBold text-gray-700 text-xl">لیست کاربران</p>
                     {select.length !== 0 && (
                         <div className="flex justify-end">
                             <button
-                                onClick={() => mutate.mutate()}
-                                className=" bg-[#0096f5] px-4 py-2 rounded-xl text-xs text-white font-yekanBold"
+                                onClick={() => shareAction({ postId: post._id, reciveUsers: select })}
+                                className=" bg-[#0096f5] px-4 py-2  rounded-xl text-xs text-white font-yekanBold"
                             >
-                                {mutate.isLoading ? (
-                                    <Spin className="sharePost" size="small" />
-                                ) : (
-                                    `ارسال به ${select.length} کاربر`
-                                )}
+                                {loadingshare ? "در حال ارسال..." : `ارسال به ${select.length} کاربر`}
                             </button>
                         </div>
                     )}
@@ -110,9 +68,8 @@ const SherePost = ({ showSheare, setShowSheare, post }: Props) => {
                         <BiSearch size={20} />
                     </div>
                     <div className="flex flex-col gap-4">
-                        {users
-                            .filter((user: any) => user._id !== userInfo._id && user._id !== post.user._id)
-                            .map((user: any, index: number) => (
+                        {!loadigSheare &&
+                            data?.data.users.map((user: any, index: number) => (
                                 <div key={user._id} className="border-b pb-2 flex justify-between items-center">
                                     <div className="flex items-center gap-1 ">
                                         <Image
@@ -126,15 +83,19 @@ const SherePost = ({ showSheare, setShowSheare, post }: Props) => {
                                         </div>
                                     </div>
                                     <button
-                                        // disabled={sharePosts[0]?.reciveUsers.includes(user._id) ? true : false}
+                                        disabled={sharePosts?.includes(user._id) ? true : false}
                                         onClick={() => clickSelect(user)}
-                                        className=" bg-[#0096f5]  px-2 py-2 rounded-xl text-[10px] text-white font-yekanBold"
+                                        className={`  px-2 py-2 rounded-xl text-[10px] text-white font-yekanBold ${
+                                            sharePosts?.includes(user._id) ? "bg-gray-300" : "bg-[#0096f5]"
+                                        }`}
                                     >
                                         {select.includes(user) ? (
                                             <div className="flex  items-center">
                                                 <BsCheck size={20} />
                                                 <p>انتخاب شد</p>
                                             </div>
+                                        ) : sharePosts?.includes(user._id) ? (
+                                            "فرستاده شده"
                                         ) : (
                                             "انتخاب"
                                         )}

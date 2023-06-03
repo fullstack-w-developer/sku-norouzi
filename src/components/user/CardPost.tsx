@@ -19,6 +19,7 @@ import useLikeActionMutation from "../../hooks/mutation/actions/useLikeActionMut
 import useBookmarkActionMuation from "../../hooks/mutation/actions/useBookmarkActionMuation";
 import useAddCommentActionMuation from "../../hooks/mutation/actions/useAddCommentActionMuation";
 import { Comment } from "../../types/common";
+import useGlobalStroe from "../../stores/global-store";
 interface Props {
     post: Post;
 }
@@ -29,19 +30,23 @@ const items = [
     },
 ];
 const CardPost = ({ post }: Props) => {
+    const { shareModal, toggleShare } = useGlobalStroe();
     const [comments, setComments] = useState<Comment[]>(post.comments);
     const [open, setOpen] = useState(false);
     const [isBookmark, setIsBookmark] = useState(post.isBookmark);
     const [text, setText] = useState("");
-    const { user } = useAuthStore()
+    const { user } = useAuthStore();
     const router = useRouter();
     const [like, setLike] = useState({
-        isLike:post.isLiked,
-        count: post.liked.length
-    })
-    const {mutate: likeAction,isLoading:loadingLike} = useLikeActionMutation({like,setState:setLike})
-    const {mutate: bookmakAction,isLoading:loadingBookmark} = useBookmarkActionMuation({isBookmark,setState:setIsBookmark})
-    const {mutate:commentAction} = useAddCommentActionMuation({setState:setComments})
+        isLike: post.isLiked,
+        count: post.liked.length,
+    });
+    const { mutate: likeAction, isLoading: loadingLike } = useLikeActionMutation({ like, setState: setLike });
+    const { mutate: bookmakAction, isLoading: loadingBookmark } = useBookmarkActionMuation({
+        isBookmark,
+        setState: setIsBookmark,
+    });
+    const { mutate: commentAction } = useAddCommentActionMuation({ setState: setComments });
 
     const onClick = ({ key }: any, post: typePost) => {
         if (!user) return router.push("/auth/signin");
@@ -51,22 +56,20 @@ const CardPost = ({ post }: Props) => {
         }
     };
 
-    const actionLike = (id:string)=>{
-        if(!user) return router.push("/auth/signin")
-         if(loadingLike) return
-        likeAction(id)
-    }
-    const actionBookmark = (id:string)=>{
-        if(!user) return router.push("/auth/signin")
-         if(loadingBookmark) return
-        bookmakAction(id)
-    }
-
-
-
-    const sharePostForUser = () => {
+    const actionLike = (id: string) => {
         if (!user) return router.push("/auth/signin");
-        // setShowSheare(!showSheare);
+        if (loadingLike) return;
+        likeAction(id);
+    };
+    const actionBookmark = (id: string) => {
+        if (!user) return router.push("/auth/signin");
+        if (loadingBookmark) return;
+        bookmakAction(id);
+    };
+
+    const toggle = () => {
+        if (!user) return router.push("/auth/signin");
+        toggleShare();
     };
 
     return (
@@ -129,11 +132,7 @@ const CardPost = ({ post }: Props) => {
                 <div className="flex justify-between border-b py-3 font-yekanBold">
                     <p className="flex items-center text-[10px]  gap-1">
                         {like.isLike ? (
-                            <BsHeartFill
-                                onClick={() => actionLike(post._id)}
-                                className="cursor-pointer text-red-500"
-                                size={20}
-                            />
+                            <BsHeartFill onClick={() => actionLike(post._id)} className="cursor-pointer text-red-500" size={20} />
                         ) : (
                             <AiOutlineHeart
                                 onClick={() => actionLike(post._id)}
@@ -152,7 +151,7 @@ const CardPost = ({ post }: Props) => {
                         <span>تعداد کامنت‌ها</span>
                         <span className="px-2">{comments.length}</span>
                     </p>
-                    <p onClick={sharePostForUser} className="flex items-center cursor-pointer text-[10px] text-gray-500 gap-1">
+                    <p onClick={toggle} className="flex items-center cursor-pointer text-[10px] text-gray-500 gap-1">
                         <IoIosShareAlt size={22} />
                         <span>فرستادن</span>
                     </p>
@@ -179,14 +178,14 @@ const CardPost = ({ post }: Props) => {
                             value={text}
                             onChange={setText}
                             cleanOnEnter
-                            onEnter={(comment:string)=>commentAction({postId:post._id, comment})}
+                            onEnter={(comment: string) => commentAction({ postId: post._id, comment })}
                             placeholder="نوشتن متن"
                         />
                     </div>
                 )}
             </div>
             {open && <ShowComment description={post.description} comments={comments} open={open} setOpen={setOpen} />}
-            {false && <SherePost showSheare={false} setShowSheare={() => { }} post={post} />}
+            {shareModal && <SherePost post={post} />}
         </>
     );
 };

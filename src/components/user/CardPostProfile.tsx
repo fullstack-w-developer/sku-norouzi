@@ -6,7 +6,6 @@ import { FaRegCommentDots } from "react-icons/fa";
 import { IoIosShareAlt } from "react-icons/io";
 import { MdMoreVert } from "react-icons/md";
 import ShowComment from "./ShowComment";
-import { typePost } from "../../tying";
 import FileSaver from "file-saver";
 import { useRecoilValue } from "recoil";
 import { userState } from "../../recoil/atom";
@@ -16,9 +15,10 @@ import { RiEdit2Fill } from "react-icons/ri";
 import EditPostUser from "./EditPostUser";
 import Poster from "../../public/image/videoposter.png";
 import ProfileInfo from "./ProfileInfo";
+import { Post } from "../../types/Post";
 
 interface Props {
-    post: typePost;
+    post: Post;
     posts: [any];
     status?: string;
     page?: number;
@@ -26,7 +26,7 @@ interface Props {
 }
 
 const CardPostProfile = ({ post, page, status, setDataProject }: Props) => {
-    const [selectPost, setSelectPost] = useState<typePost | any>({});
+    const [selectPost, setSelectPost] = useState<Post | any>({});
     const router = useRouter();
 
     const [openEditPost, setOpenEditPost] = useState(false);
@@ -60,7 +60,7 @@ const CardPostProfile = ({ post, page, status, setDataProject }: Props) => {
             ),
         },
     ];
-    const onClick = ({ key }: any, post: typePost) => {
+    const onClick = ({ key }: any, post: Post) => {
         if (!isToken) return router.push("/auth/signin");
 
         if (Number(key) === 1) {
@@ -160,7 +160,7 @@ const CardPostProfile = ({ post, page, status, setDataProject }: Props) => {
     return (
         <>
             {contextHolder}
-            <div className="!bg-white p-1 h-fit shadow-md border w-full overflow-hidden border-gray-100 rounded-lg">
+            {/* <div className="!bg-white p-1 h-fit shadow-md border w-full overflow-hidden border-gray-100 rounded-lg">
                 <div className="flex justify-between items-center">
                     <ProfileInfo
                         image={post.user.profile.url}
@@ -269,7 +269,7 @@ const CardPostProfile = ({ post, page, status, setDataProject }: Props) => {
                         </p>
                     ))}
                 </div>
-            </div>
+            </div> */}
             {openEditPost && (
                 <EditPostUser
                     open={openEditPost}

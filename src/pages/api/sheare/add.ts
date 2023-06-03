@@ -3,7 +3,7 @@ import { withAuth } from "../../../../middleware/withProtect";
 import type { NextApiResponse } from "next";
 import Shearepost from "../../../../models/sharepost";
 import connectDB from "../../../utils/connectDB";
-import { NextApiReq } from "../../../types/common";
+import { NextApiReq, User } from "../../../types/common";
 
 type Data = {
     message: string;
@@ -27,34 +27,16 @@ export default withAuth(handler);
 const addShearePost = async (req: NextApiReq, res: NextApiResponse) => {
     try {
         const { postId, reciveUsers } = req.body;
-        const findSender: any = await Shearepost.findOne({
-            // @ts-ignore
-            senderId: req.user._id,
-        });
 
-        if (findSender) {
-            await Shearepost.updateOne(
-                { _id: findSender._id },
-                {
-                    $addToSet: {
-                        reciveUsers: JSON.parse(reciveUsers),
-                        postId,
-                    },
-                }
-            );
-            res.status(201).json({
-                message: "با موفقیت انجام شد",
-                status: true,
+        reciveUsers.map(async (recive: User) => {
+            const sheare = new Shearepost({
+                postId,
+                reciveUsers: recive,
+                senderId: req.user._id,
             });
-            return;
-        }
-        const sheare = new Shearepost({
-            postId,
-            reciveUsers: JSON.parse(reciveUsers),
-            //   @ts-ignore
-            senderId: req.user._id,
+
+            await sheare.save();
         });
-        await sheare.save();
 
         res.status(201).json({
             message: "با موفقیت انجام شد",

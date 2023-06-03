@@ -1,12 +1,9 @@
-import { Tabs } from "antd";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { AiOutlineQuestion } from "react-icons/ai";
 import { FaUser } from "react-icons/fa";
 import { GiCheckMark } from "react-icons/gi";
-import { MdOutlineClose, MdOutlineError } from "react-icons/md";
-import { TbUserExclamation } from "react-icons/tb";
 import { useQuery } from "react-query";
 import { useRecoilValue } from "recoil";
 import EditImageUser from "../../components/user/EditImageUser";
@@ -16,9 +13,9 @@ import { userState } from "../../recoil/atom";
 import { optionQuery } from "../../utils/data";
 import { getPostUserProfile } from "../../utils/fetch/requests";
 
-const Profile = ({ posts }: any) => {
+const Profile = () => {
     const [open, setOpen] = useState(false);
-    const [dataProject, setDataProject] = useState(posts);
+    const [dataProject, setDataProject] = useState([]);
     const [page, setPage] = useState(2);
     const [status, setStatus] = useState("");
     const [select, setSelect] = useState(0);
@@ -56,32 +53,32 @@ const Profile = ({ posts }: any) => {
         },
     ];
 
-    const refetchAgain = async (status: string, index: number) => {
-        if (select === index) return;
-        setPage(2);
-        setSelect(index);
-        setDataProject({ posts: [], total: 0 });
-        await setStatus(status);
-        refetch();
-    };
+    // const refetchAgain = async (status: string, index: number) => {
+    //     if (select === index) return;
+    //     setPage(2);
+    //     setSelect(index);
+    //     setDataProject({ posts: [], total: 0 });
+    //     await setStatus(status);
+    //     refetch();
+    // };
 
-    const { refetch, isLoading, isFetching } = useQuery(
-        ["postsProfile_", status],
-        () =>
-            getPostUserProfile({
-                url: `/myproject?skip=1&status=${status}`,
-            }),
-        {
-            ...optionQuery,
-            enabled: false,
-            onSuccess: async ({ data }) => {
-                setDataProject({
-                    posts: data?.data[0]?.paginatedResults,
-                    total: data?.data[0]?.totalCount[0]?.Total,
-                });
-            },
-        }
-    );
+    // const { refetch, isLoading, isFetching } = useQuery(
+    //     ["postsProfile_", status],
+    //     () =>
+    //         getPostUserProfile({
+    //             url: `/myproject?skip=1&status=${status}`,
+    //         }),
+    //     {
+    //         ...optionQuery,
+    //         enabled: false,
+    //         onSuccess: async ({ data }) => {
+    //             setDataProject({
+    //                 posts: data?.data[0]?.paginatedResults,
+    //                 total: data?.data[0]?.totalCount[0]?.Total,
+    //             });
+    //         },
+    //     }
+    // );
 
     return (
         <SideBarMenu>
@@ -106,7 +103,7 @@ const Profile = ({ posts }: any) => {
                             if (index === 3 && userInfo.role === "USER") return true;
                             return (
                                 <button
-                                    onClick={() => refetchAgain(item.status, index)}
+                                    // onClick={() => refetchAgain(item.status, index)}
                                     className={`flex items-center cursor-pointer text-xs gap-1 pb-2 ${
                                         select === index ? "text-blue-500 border-b border-blue-500 " : "text-gray-500"
                                     }`}
@@ -118,45 +115,45 @@ const Profile = ({ posts }: any) => {
                             );
                         })}
                     </div>
-                    <PostsProfile
+                    {/* <PostsProfile
                         page={page}
                         setPage={setPage}
                         status={status}
                         setDataProject={setDataProject}
                         posts={dataProject}
                         loadPosts={isLoading || isFetching}
-                    />
+                    /> */}
                 </div>
             </div>
-            <EditImageUser open={open} setOpen={setOpen} />
+            {open && <EditImageUser open={open} setOpen={setOpen} />}
         </SideBarMenu>
     );
 };
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-    const token = ctx.req.cookies["token"];
-    if (!token) {
-        return {
-            redirect: {
-                destination: "/",
-                permanent: false,
-            },
-        };
-    }
-    const result = await fetch(`${process.env.BASEURL}/myproject?skip=1`, {
-        headers: {
-            Authorization: token!,
-        },
-    }).then((response) => response.json());
+// export const getServerSideProps: GetServerSideProps = async (ctx) => {
+//     const token = ctx.req.cookies["token"];
+//     if (!token) {
+//         return {
+//             redirect: {
+//                 destination: "/",
+//                 permanent: false,
+//             },
+//         };
+//     }
+//     const result = await fetch(`${process.env.BASEURL}/myproject?skip=1`, {
+//         headers: {
+//             Authorization: token!,
+//         },
+//     }).then((response) => response.json());
 
-    return {
-        props: {
-            posts: {
-                posts: result.data[0].paginatedResults,
-                total: result.data[0]?.totalCount[0]?.Total ?? 0,
-            },
-        },
-    };
-};
+//     return {
+//         props: {
+//             posts: {
+//                 posts: result.data[0].paginatedResults,
+//                 total: result.data[0]?.totalCount[0]?.Total ?? 0,
+//             },
+//         },
+//     };
+// };
 
 export default Profile;

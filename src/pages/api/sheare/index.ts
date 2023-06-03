@@ -31,7 +31,6 @@ const getShare = async (req: NextApiReq, res: NextApiResponse) => {
                 $sort: { createdAt: -1 },
             },
             {
-                // @ts-ignore
                 $match: { reciveUsers: req.user._id },
             },
             {

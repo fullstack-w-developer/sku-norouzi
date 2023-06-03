@@ -1,7 +1,7 @@
 import { Post } from ".";
 import { AuthResponseShape } from "../common";
 
-export interface GetAllPostRecponse extends AuthResponseShape {
+export interface GetShearePostRecponse extends AuthResponseShape {
     data: [
         {
             paginatedResults: Post[];

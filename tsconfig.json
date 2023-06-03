@@ -15,6 +15,13 @@
         "jsx": "preserve",
         "incremental": true
     },
-    "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "utils/data.ts", "utils/styles.js", "src/hooks/query/post/useGetAllPostsQuery.ts"],
+    "include": [
+        "next-env.d.ts",
+        "**/*.ts",
+        "**/*.tsx",
+        "utils/data.ts",
+        "utils/styles.js",
+        "src/hooks/query/post/useGetAllPostsQuery.ts"
+    ],
     "exclude": ["node_modules"]
 }

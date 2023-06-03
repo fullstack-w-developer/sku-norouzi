@@ -6,21 +6,15 @@ import sku from "../../../assets/image/sku.jpg";
 import Search from "../Search";
 import { BiSearch } from "react-icons/bi";
 import { IoIosMenu } from "react-icons/io";
-import { setRecoil } from "recoil-nexus";
-import { useRecoilValue } from "recoil";
 import useAuthStore from "../../../stores/auth-store";
 import useGlobalStroe from "../../../stores/global-store";
 const Header = () => {
-    const {user} = useAuthStore();
-  const {toggleMenu} = useGlobalStroe()
+    const { user } = useAuthStore();
+    const { toggleMenu } = useGlobalStroe();
     return (
         <div className="w-full flex items-center bg-white z-50 justify-between sticky top-0 px-4 lg:px-10 h-[70px] lg:h-[90px] shadow-sm">
             <div className="flex gap-3 items-center lg:flex-[2]">
-                <IoIosMenu
-                    onClick={toggleMenu}
-                    size={29}
-                    className="lg:hidden cursor-pointer"
-                />
+                <IoIosMenu onClick={toggleMenu} size={29} className="lg:hidden cursor-pointer" />
                 <div className="w-32 h-10 lg:!w-44 lg:!h-14 relative ml-10">
                     <Image fill src={sku} alt="" />
                 </div>

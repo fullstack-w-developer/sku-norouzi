@@ -8,14 +8,12 @@ interface UseBookmarkActionMuationProps {
 }
 
 const useBookmarkActionMuation = ({ isBookmark, setState }: UseBookmarkActionMuationProps) => {
-
     return useMutation(async (id: string) => (isBookmark ? await UnBookmark(id) : await addBookmark(id)), {
         onMutate: async (id: string) => {
-            setState(!isBookmark)
+            setState(!isBookmark);
         },
         onError: async function (error) {
             setState(isBookmark);
-
         },
     });
 };
