@@ -18,3 +18,7 @@ export const findSheareById = async (postId?: string) => {
     const url = getRoute({ route: `${routes.sheare.id}?id=${postId}` });
     return await client<GetShearePostByIdRecponse>({ url });
 };
+export const getMyProject = async (status:string,page:number) => {
+    const url = getRoute({ route: `${routes.post.my_project}?skip=${page}&status=${status}` });
+    return await client<GetAllPostRecponse>({ url });
+};

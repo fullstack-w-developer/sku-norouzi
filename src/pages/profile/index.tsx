@@ -1,92 +1,35 @@
-import { GetServerSideProps } from "next";
 import Head from "next/head";
 import React, { useState } from "react";
-import { AiOutlineQuestion } from "react-icons/ai";
-import { FaUser } from "react-icons/fa";
-import { GiCheckMark } from "react-icons/gi";
-import { useQuery } from "react-query";
 import { useRecoilValue } from "recoil";
 import EditImageUser from "../../components/user/EditImageUser";
 import SideBarMenu from "../../components/user/Layout/SideBarMenu";
-import PostsProfile from "../../components/user/PostsProfile";
 import { userState } from "../../recoil/atom";
-import { optionQuery } from "../../utils/data";
-import { getPostUserProfile } from "../../utils/fetch/requests";
+import Posts from "../../components/user/Posts";
+import { itemsTab } from "../../helpers/utils/data";
+import usePostStore from "../../stores/post-store";
+import useGetMyProject from "../../hooks/query/myproject/useGetMyProject";
 
 const Profile = () => {
+    const { posts } = usePostStore()
     const [open, setOpen] = useState(false);
-    const [dataProject, setDataProject] = useState([]);
-    const [page, setPage] = useState(2);
+    const [page, setPage] = useState(1);
     const [status, setStatus] = useState("");
-    const [select, setSelect] = useState(0);
+    const [select, setSelect] = useState(1);
     const userInfo = useRecoilValue(userState);
-    const itemsTab = [
-        {
-            name: "همه",
-            icon: FaUser,
-            status: "",
-            role: "",
-        },
-        {
-            name: "پست‌های تائید شده",
-            icon: GiCheckMark,
-            status: "success",
-            role: "",
-        },
-        {
-            name: "پست‌های در حال انتظار ",
-            icon: AiOutlineQuestion,
-            status: "waiting",
-            role: "",
-        },
-        {
-            name: "پست‌های دانشجوی‌های من",
-            icon: AiOutlineQuestion,
-            status: "myStudent",
-            role: "MASTER",
-        },
-        {
-            name: "پست‌های رد شده",
-            icon: AiOutlineQuestion,
-            status: "faild",
-            role: "USER",
-        },
-    ];
+    const { isLoading, isFetching } = useGetMyProject({ page, status })
 
-    // const refetchAgain = async (status: string, index: number) => {
-    //     if (select === index) return;
-    //     setPage(2);
-    //     setSelect(index);
-    //     setDataProject({ posts: [], total: 0 });
-    //     await setStatus(status);
-    //     refetch();
-    // };
-
-    // const { refetch, isLoading, isFetching } = useQuery(
-    //     ["postsProfile_", status],
-    //     () =>
-    //         getPostUserProfile({
-    //             url: `/myproject?skip=1&status=${status}`,
-    //         }),
-    //     {
-    //         ...optionQuery,
-    //         enabled: false,
-    //         onSuccess: async ({ data }) => {
-    //             setDataProject({
-    //                 posts: data?.data[0]?.paginatedResults,
-    //                 total: data?.data[0]?.totalCount[0]?.Total,
-    //             });
-    //         },
-    //     }
-    // );
-
+    const selectTab = (item: any) => {
+        if (select === item.id) return false
+        setStatus(item.status)
+        setSelect(item.id)
+    }
     return (
         <SideBarMenu>
             <Head>
                 <title>دانشگاه شهر کرد | پروفایل کاربری</title>
             </Head>
-            <div className="my-10 px-5 lg:m-10">
-                <div className="flex justify-between items-center">
+            <div className="my-10 ">
+                <div className="flex justify-between items-center w-[90%] mx-auto">
                     <div className="flex items-center gap-2 ">
                         <div className="w-4 h-4 bg-sku rounded-full"></div>
                         <p className="font-ExtraBold">پروفایل کاربری</p>
@@ -97,16 +40,15 @@ const Profile = () => {
                     </button>
                 </div>
                 <div className="mt-20 !z-[99999]">
-                    <div className="flex items-center gap-4 border-b ">
+                    <div className="flex items-center gap-4 border-b w-[90%] mx-auto">
                         {itemsTab.map((item, index: number) => {
                             if (index === 4 && userInfo.role !== "USER") return;
                             if (index === 3 && userInfo.role === "USER") return true;
                             return (
                                 <button
-                                    // onClick={() => refetchAgain(item.status, index)}
-                                    className={`flex items-center cursor-pointer text-xs gap-1 pb-2 ${
-                                        select === index ? "text-blue-500 border-b border-blue-500 " : "text-gray-500"
-                                    }`}
+                                    onClick={() => selectTab(item)}
+                                    className={`flex items-center cursor-pointer text-xs gap-1 pb-2 ${select === item.id ? "text-blue-500 border-b border-blue-500 " : "text-gray-500"
+                                        }`}
                                     key={index}
                                 >
                                     <item.icon size={14} />
@@ -115,6 +57,8 @@ const Profile = () => {
                             );
                         })}
                     </div>
+                    <Posts fetchMoreData={() => { }} hasMore={true} isLoading={isLoading || isFetching} posts={posts} />
+
                     {/* <PostsProfile
                         page={page}
                         setPage={setPage}

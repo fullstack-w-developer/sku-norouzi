@@ -6,6 +6,7 @@ const apiRoutes = {
     },
     post: {
         all: "/post?skip=1",
+        my_project:"/myproject",
         action: {
             like: "/post/like",
             unlike: "/post/unlike",
@@ -13,6 +14,7 @@ const apiRoutes = {
             unBookmark: "/post/deletesavepost",
             comment: "/post/addcomment",
         },
+
     },
     user: {
         allUser: "/user/all",

@@ -32,7 +32,6 @@ const updateLike = async (req: NextApiReq, res: NextApiResponse<Data>) => {
         const updateLike = await Posts.findByIdAndUpdate(
             { _id: req.body.postId },
             {
-                // @ts-ignore
                 $addToSet: { liked: req.user._id },
             },
 

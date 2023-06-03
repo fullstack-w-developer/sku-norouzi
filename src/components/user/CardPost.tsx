@@ -1,4 +1,4 @@
-import { Dropdown, Image } from "antd";
+import { Dropdown, Image, Tag } from "antd";
 import React, { useState } from "react";
 import { AiOutlineHeart } from "react-icons/ai";
 import InputEmoji from "react-input-emoji";
@@ -20,6 +20,7 @@ import useBookmarkActionMuation from "../../hooks/mutation/actions/useBookmarkAc
 import useAddCommentActionMuation from "../../hooks/mutation/actions/useAddCommentActionMuation";
 import { Comment } from "../../types/common";
 import useGlobalStroe from "../../stores/global-store";
+import Link from "next/link";
 interface Props {
     post: Post;
 }
@@ -84,15 +85,12 @@ const CardPost = ({ post }: Props) => {
                     />
 
                     <div className="flex items-center gap-2">
-                        {/* {sender && (
-                            <Link className="text-[10px] flex gap-2 items-center font-yekanBold" href={`/profile/${sender._id}`}>
-                                <span> ارسال شده از:</span>
-                                <Tag color="volcano" className="font-yekanBold">
-                                    {" "}
-                                    {sender.full_name}
-                                </Tag>
-                            </Link>
-                        )} */}
+
+                        {router.pathname === "/profile" && (
+                            <Tag color={post.status === "success" ? "success" : post.status === "waiting" ? "warning" : "error"} className="font-yekanBold">
+                                {post.status === "success" ? "تائیده شده" : post.status === "waiting" ? "در حال انتظار" : "رد شده"}
+                            </Tag>
+                        )}
                         {isBookmark ? (
                             <BsBookmarkFill
                                 className="cursor-pointer text-gray-800"

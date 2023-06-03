@@ -39,7 +39,7 @@ const getMyPosts = async (req: any, res: NextApiResponse) => {
         };
     } else if (status === "success") {
         query["status"] = "success";
-        query["masterId"] = req.user._id;
+        query["userId"] = req.user._id;
         query["student"] = false;
     } else {
         query = {

@@ -9,7 +9,7 @@ export type Post = {
     masterId: string;
     isLiked: boolean;
     saves: [];
-    status: "success";
+    status: "success" | "waiting" | "failed";
     student: boolean;
     isBookmark: boolean;
     technologies: [];
