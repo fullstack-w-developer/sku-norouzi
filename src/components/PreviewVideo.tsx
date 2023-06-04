@@ -1,9 +1,9 @@
 import { Drawer } from "antd";
 import { useState, useEffect } from "react";
 interface typeVideo {
-    url: string;
-    type: string;
-    id: string;
+    url?: string;
+    type?: string;
+    id?: string;
 }
 interface Props {
     src: typeVideo;

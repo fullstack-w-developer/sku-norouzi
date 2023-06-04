@@ -6,6 +6,7 @@ import formatUnicorn from "format-unicorn/safe";
 import { GetRouteProps } from "../../types/services";
 import axios from "../../services/utils/axios";
 import { getUser } from "../../services/auth";
+import { Post } from "../../types/Post";
 
 export const logRequestedUrl = ({ baseURL, method, url }: AxiosRequestConfig) => {
     if (baseURL && inDevEnvironment) {
@@ -23,12 +24,28 @@ export const generateFormData = (obj: object) => {
     const data = new FormData();
     Object.entries(obj).forEach(([key, value]) => {
         if (key === "technologies") {
-
             data.append(key, JSON.stringify(value));
-        } else {
+        }
+         else {
             data.append(key, value);
         }
     });
+    return { data, headers: { "Content-Type": "multipart/form-data" } };
+};
+export const generateFormDataEditPost = (obj: Post) => {
+    const data =  new FormData();
+    if (typeof obj.file.url !== "string") {
+        data.append("file", obj.file.url);
+        data.append("type", obj.file.type);
+    }
+    if (typeof obj.zip.url !== "string") {
+        data.append("zip", obj.zip.url);
+    }
+    data.append("title", obj.title);
+    data.append("id", obj._id);
+    data.append("description", obj.description);
+    data.append("technologies", JSON.stringify(obj.technologies));
+    data.append("status", obj.status);
     return { data, headers: { "Content-Type": "multipart/form-data" } };
 };
 

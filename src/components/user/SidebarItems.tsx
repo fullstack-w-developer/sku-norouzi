@@ -8,17 +8,13 @@ import { useRouter } from "next/router";
 import { useRecoilValue } from "recoil";
 import { userState } from "../../recoil/atom";
 import { routing } from "../../utils/routing";
+import useAuthStore from "../../stores/auth-store";
 
 const SidebarItems = () => {
     const router = useRouter();
-    const user = useRecoilValue(userState);
-    const [userInfo, setUserInfo] = useState<any>({});
-    useEffect(() => {
-        setUserInfo(user);
-    }, []);
+ const {user} = useAuthStore()  
 
     const logout = () => {};
-
     return (
         <div className="flex flex-col">
             {publicMenu.map((menu, index) => {
@@ -38,7 +34,7 @@ const SidebarItems = () => {
                     </Link>
                 );
             })}
-            {userInfo.role === "MASTER" && (
+            {user?.role === "MASTER" && (
                 <Link href="/waitingpost">
                     <div
                         className={`flex items-center text-[14px] hover:bg-gray-50 py-4 cursor-pointer justify-between px-3 ${

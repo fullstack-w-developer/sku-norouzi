@@ -1,6 +1,7 @@
 export const POST = {
     ALL_POST: "all_posts",
     MY_PROJECT:"get-ny-project",
+    WAITING_MASTER:"wait-master-post",
 };
 
 export const USER = {

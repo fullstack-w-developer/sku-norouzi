@@ -10,7 +10,7 @@ interface Props {
 const InfiniteScroll = ({ dataLength, next, hasMore, children }: Props) => {
     return (
         <BaseInfiniteScroll
-            dataLength={dataLength}
+            dataLength={dataLength || 0}
             next={next}
             hasMore={hasMore}
             loader={""}

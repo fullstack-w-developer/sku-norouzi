@@ -1,13 +1,15 @@
 import { POST } from "../../../helpers/constants/query-keys";
 import { useQuery } from "react-query";
-import { getAllPost } from "../../../services/post";
+import {  getWaitingPostMaster } from "../../../services/post";
 import usePostStore from "../../../stores/post-store";
 import useAuthStore from "../../../stores/auth-store";
-
-const useGetAllPostsQuery = () => {
+interface useWaitingPostMasterQueryProps {
+    page: number;
+}
+const useWaitingPostMasterQuery = ({page}:useWaitingPostMasterQueryProps) => {
     const {authLoading} = useAuthStore()
     const { setPosts } = usePostStore();
-    return useQuery([POST.ALL_POST], async () => await getAllPost(), {
+    return useQuery([POST.WAITING_MASTER,page], async () => await getWaitingPostMaster(page), {
         refetchOnReconnect: false,
         refetchOnMount: true,
         refetchOnWindowFocus: false,
@@ -22,4 +24,4 @@ const useGetAllPostsQuery = () => {
     });
 };
 
-export default useGetAllPostsQuery;
+export default useWaitingPostMasterQuery;

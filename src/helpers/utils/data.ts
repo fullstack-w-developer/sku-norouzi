@@ -38,3 +38,23 @@ export const itemsTab = [
         id:5,
     },
 ];
+
+
+
+export const initDataEditPost = {
+    user: {
+        profile: {
+            url: "",
+            id: "",
+        },
+        first_name: "",
+        last_name: "",
+    },
+    file: { url: "", type: "", id: "" },
+    zip: { url: "", id: "" },
+    technologies: [],
+    title: "",
+    description: "",
+    status: "",
+    _id: "",
+};

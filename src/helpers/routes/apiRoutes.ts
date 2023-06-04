@@ -7,6 +7,8 @@ const apiRoutes = {
     post: {
         add:"/post/add",
         all: "/post?skip=1",
+        post_waitong_master:"/masters/waitpost",
+        editPost_by_master:"/masters/verifypost",
         my_project: "/myproject",
         action: {
             like: "/post/like",

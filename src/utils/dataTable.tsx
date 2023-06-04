@@ -5,9 +5,11 @@ import { setRecoil } from "recoil-nexus";
 import { editModalAdminState, editWaitingProperties } from "../recoil/atom";
 import moment from "jalali-moment";
 import { useRecoilValue } from "recoil";
-import { typeUser } from "../tying";
+import { User } from "../types/common";
+import usePostStore from "../stores/post-store";
+import { Post } from "../types/Post";
 
-export const columns: ColumnsType<typeUser> = [
+export const columns: ColumnsType<User> = [
     {
         key: "full_name",
         title: "نام نام‌خانوادگی",
@@ -73,7 +75,7 @@ export const columns: ColumnsType<typeUser> = [
     },
 ];
 
-export const columnsNewUser: ColumnsType<typeUser> = [
+export const columnsNewUser: ColumnsType<User> = [
     {
         key: "full_name",
         title: "نام نام‌خانوادگی",
@@ -138,12 +140,9 @@ export const columnsNewUser: ColumnsType<typeUser> = [
         ),
     },
 ];
-export const columnswaitigProject: ColumnsType<
-    typeUser
-    // @ts-ignore
-> = () => {
-    const data = useRecoilValue(editWaitingProperties);
-
+// @ts-ignore
+export const columnswaitigProject: ColumnsType<User> = () => {
+  const {setEditPost_master} = usePostStore()
     return [
         {
             key: "full_name",
@@ -205,17 +204,10 @@ export const columnswaitigProject: ColumnsType<
         {
             title: "جزئیات",
             key: "action",
-            render: (_: any, record: any) => (
+            render: (_: any, record: Post) => (
                 <>
                     <button
-                        onClick={() =>
-                            setRecoil(editWaitingProperties, {
-                                ...data,
-                                open: true,
-                                // @ts-ignore
-                                data: record,
-                            })
-                        }
+                        onClick={()=>setEditPost_master({open:true,post:record})}
                     >
                         دیدن و ویرایش
                     </button>

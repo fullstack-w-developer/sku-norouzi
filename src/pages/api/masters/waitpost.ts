@@ -12,7 +12,6 @@ type Data = {
 };
 connectDB();
 function handler(req: NextApiReq, res: NextApiResponse<Data>) {
-    // @ts-ignore
     if (req.method === "GET" && req.user.role === "MASTER") {
         getShare(req, res);
     } else {

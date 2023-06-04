@@ -2,9 +2,13 @@ import { withAuth } from "../../../../middleware/withProtect";
 import type { NextApiResponse } from "next";
 import multer from "multer";
 import connectDB from "../../../utils/connectDB";
-import drive, { bufferToStream, getUrl } from "../../../utils/drive";
 import Posts from "../../../../models/post";
 import { NextApiReq } from "../../../types/common";
+import { baseServer } from "../../../helpers/constants/env-variables";
+import fs from 'fs'
+import path from 'path'
+import getConfig from 'next/config'
+const { serverRuntimeConfig } = getConfig()
 
 export const config = {
     api: {
@@ -27,18 +31,26 @@ async function handler(req: NextApiReq, res: NextApiResponse<Data>) {
 
 export default withAuth(handler);
 
+
+
+
 const updatePost = async (req: any, res: any) => {
     const maxSize = 100 * 1024 * 1024; // 10MB
 
     try {
-        let fileAdress: any = {};
-        const storage = multer.memoryStorage();
-        const upload = multer({
-            storage: storage,
-            limits: { fileSize: maxSize },
-        }).fields([{ name: "file" }, { name: "zip" }]);
+        const storage = multer.diskStorage({
+            destination: "public/uploads",
+            filename: function (req, file, cb) {
+                const uniqueSuffix = `${Date.now() + "-" + Math.round(Math.random() * 1e9)}${file.originalname}`;
+                cb(null, file.fieldname + "-" + uniqueSuffix);
+            },
+        });
+        const upload = multer({ storage: storage, limits: { fileSize: maxSize } }).fields([{ name: "file" }, { name: "zip" }]);
 
         await upload(req, res, async (err) => {
+            let fileAdress: any = {};
+            const findPost = await Posts.findById(req.body.id)
+              
             if (err) {
                 return res.status(400).json({
                     message: err,
@@ -46,53 +58,25 @@ const updatePost = async (req: any, res: any) => {
                 });
             }
 
-            if (req?.files?.file) {
-                await drive.files.delete({
-                    fileId: req.body.fileId,
-                });
-                const createFile = await drive.files.create({
-                    requestBody: {
-                        name: req.files?.file[0].originalname,
-                        mimeType: req?.files?.file[0].mimetype!,
-                        parents: ["12_LODZQ5udDSexdO1jTfqfhlPHJRaNSU"],
-                    },
-                    media: {
-                        mimeType: req?.files?.file[0].mimetype,
-                        body: bufferToStream(req?.files?.file[0].buffer),
-                    },
-                });
-                const link = await getUrl(createFile.data.id!);
-                fileAdress["file"] = {
-                    url: link.data.webContentLink,
-                    id: createFile.data.id!,
-                    type: createFile.data.mimeType?.split("/")[0],
-                };
-            }
             if (req?.files?.zip) {
-                await drive.files.delete({
-                    fileId: req.body.zipId,
-                });
-
-                const createFile = await drive.files.create({
-                    requestBody: {
-                        name: req.files?.zip[0].originalname!,
-                        mimeType: req?.files?.zip[0].mimetype!,
-                        parents: ["12_LODZQ5udDSexdO1jTfqfhlPHJRaNSU"],
-                    },
-                    media: {
-                        mimeType: req?.files?.zip[0].mimetype,
-                        body: bufferToStream(req?.files?.zip[0].buffer),
-                    },
-                });
-
-                const link = await getUrl(createFile.data.id!);
+                fs.unlinkSync(`./public/uploads${findPost.zip.url.split("/uploads")[1]}`)
                 fileAdress["zip"] = {
-                    url: link.data.webContentLink,
-                    id: createFile.data.id!,
-                };
+                    url: `${baseServer}/uploads/${req.files.zip[0].filename}`,
+                }
+
+            }
+            if (req?.files?.file) {
+                fs.unlinkSync(`./public/uploads${findPost.file.url.split("/uploads")[1]}`)
+                fileAdress["file"] = {
+                    url: `${baseServer}/uploads/${req.files.file[0].filename}`,
+                    type: req.files.file[0].mimetype.split("/")[0] === "image" ? "image" : "video",
+                }
             }
 
-            const post = await Posts.findByIdAndUpdate(
+
+
+
+            await Posts.findByIdAndUpdate(
                 {
                     _id: req.body.id,
                 },
@@ -104,11 +88,32 @@ const updatePost = async (req: any, res: any) => {
                 {
                     new: true,
                 }
-            );
+            )
 
+
+
+            // await fs.unlinkSync(`${baseServer}/`)
+
+            // const post = new Posts({
+            //     file: {
+            //         url: `${baseServer}/uploads/${req.files.file[0].filename}`,
+            //         id: "1",
+            //         type: req.files.file[0].mimetype.split("/")[0] === "image" ? "image" : "video",
+            //     },
+            //     zip: {
+            //         url: `${baseServer}/uploads/${req.files.zip[0].filename}`,
+            //         id: "1",
+            //     },
+            //     ...req.body,
+            //     technologies: JSON.parse(req.body.technologies),
+            //     masterId: req.body.master,
+            //     userId: req.user._id,
+            //     status: "waiting",
+            // });
+            // await post.save();
             res.status(200).json({
                 status: true,
-                message: "پست با موفقیت اپدیت شد",
+                message: "پست با موفقیت ایجاد شد",
             });
         });
     } catch (error: any) {
