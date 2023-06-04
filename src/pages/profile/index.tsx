@@ -58,15 +58,6 @@ const Profile = () => {
                         })}
                     </div>
                     <Posts fetchMoreData={() => { }} hasMore={true} isLoading={isLoading || isFetching} posts={posts} />
-
-                    {/* <PostsProfile
-                        page={page}
-                        setPage={setPage}
-                        status={status}
-                        setDataProject={setDataProject}
-                        posts={dataProject}
-                        loadPosts={isLoading || isFetching}
-                    /> */}
                 </div>
             </div>
             {open && <EditImageUser open={open} setOpen={setOpen} />}
@@ -74,30 +65,6 @@ const Profile = () => {
     );
 };
 
-// export const getServerSideProps: GetServerSideProps = async (ctx) => {
-//     const token = ctx.req.cookies["token"];
-//     if (!token) {
-//         return {
-//             redirect: {
-//                 destination: "/",
-//                 permanent: false,
-//             },
-//         };
-//     }
-//     const result = await fetch(`${process.env.BASEURL}/myproject?skip=1`, {
-//         headers: {
-//             Authorization: token!,
-//         },
-//     }).then((response) => response.json());
 
-//     return {
-//         props: {
-//             posts: {
-//                 posts: result.data[0].paginatedResults,
-//                 total: result.data[0]?.totalCount[0]?.Total ?? 0,
-//             },
-//         },
-//     };
-// };
 
 export default Profile;

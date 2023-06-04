@@ -20,3 +20,14 @@ export type Post = {
     zip: { url: string; id: string };
     _id: string;
 };
+
+
+
+export type AddPost = {
+    file: null | File,
+    title: string,
+    technologies: {name:string,id:string}[],
+    zip: null | File,
+    master: string,
+    description: string,
+}

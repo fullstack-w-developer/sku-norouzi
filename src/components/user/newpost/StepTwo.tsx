@@ -4,30 +4,26 @@ import { BsFileZipFill } from "react-icons/bs";
 import fetchClient from "../../../utils/fetchClient";
 import ReactSelect from "react-select";
 import { colourStyles } from "../../../utils/styles";
+import useGetAllMasterQuery from "../../../hooks/query/master/useGetAllMasterQuery";
+import useGetAllTechnologyQuery from "../../../hooks/query/technology/useGetAllTechnologyQuery";
 interface Props {
     setStep: React.Dispatch<React.SetStateAction<number>>;
-    masters: {}[];
     setFormData: React.Dispatch<any>;
     formData: any;
     onSubmit: (e: any) => void;
     loading: boolean;
     showTechnology: boolean;
 }
-const StepTwo = ({ setStep, masters, formData, setFormData, onSubmit, loading, showTechnology }: Props) => {
+const StepTwo = ({ setStep, formData, setFormData, onSubmit, loading }: Props) => {
+    const {data:masters} = useGetAllMasterQuery()
+    const {data:technologies} = useGetAllTechnologyQuery()
     const { TextArea } = Input;
-    const [list, setList] = useState([]);
+
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value, name } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
-    const getList = async () => {
-        const { data } = await fetchClient.get("/list/technology");
-        setList(data.data.list);
-    };
-    useEffect(() => {
-        getList();
-    }, [showTechnology]);
     return (
         <div className="mt-20 mx-auto w-[95%] lg:w-[60%]">
             <Spin spinning={loading}>
@@ -47,7 +43,7 @@ const StepTwo = ({ setStep, masters, formData, setFormData, onSubmit, loading, s
                             className="w-full master_select"
                             placeholder="انتخاب استاد مربوطه"
                         >
-                            {masters.map((master: any, index) => (
+                            {masters?.data.map((master: any, index) => (
                                 <Select.Option key={master._id}>
                                     <span className="text-xs font-yekanBold text-gray-500"> {master.full_name}</span>
                                 </Select.Option>
@@ -89,7 +85,7 @@ const StepTwo = ({ setStep, masters, formData, setFormData, onSubmit, loading, s
                             placeholder=" "
                             className="w-full"
                             styles={colourStyles}
-                            options={list}
+                            options={technologies?.data}
                             getOptionValue={(option: any) => option._id}
                             getOptionLabel={(option: any) => option.name}
                             onChange={(value: any) =>

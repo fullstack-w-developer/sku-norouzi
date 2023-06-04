@@ -1,9 +1,10 @@
-import { getRoute } from "../helpers/utils/services";
+import { generateFormData, getRoute } from "../helpers/utils/services";
 import client from "./utils/client";
 import routes from "../helpers/routes/apiRoutes";
 import { GetAllPostRecponse } from "../types/Post/GetAllPostRecponse";
 import { GetShearePostRecponse } from "../types/Post/GetShearePostRecponse";
 import { GetShearePostByIdRecponse } from "../types/Post/GetShearePostByIdRecponse";
+import { AddPost } from "../types/Post";
 
 export const getAllPost = async () => {
     const url = getRoute({ route: routes.post.all });
@@ -21,4 +22,9 @@ export const findSheareById = async (postId?: string) => {
 export const getMyProject = async (status:string,page:number) => {
     const url = getRoute({ route: `${routes.post.my_project}?skip=${page}&status=${status}` });
     return await client<GetAllPostRecponse>({ url });
+};
+export const addNewPost = async (data:AddPost) => {
+    const url = getRoute({ route: `${routes.post.add}` });
+    const formData = generateFormData(data);
+    return await client<GetAllPostRecponse>({ url, method:'POST', ...formData });
 };

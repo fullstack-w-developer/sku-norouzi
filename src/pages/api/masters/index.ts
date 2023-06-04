@@ -20,7 +20,7 @@ async function handler(req: NextApiReq, res: NextApiResponse<Data>) {
         res.status(200).json({
             message: "success",
             status: true,
-            data: { masters },
+            data: masters ,
         });
     } else {
         res.status(403).json({

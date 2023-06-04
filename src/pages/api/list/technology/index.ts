@@ -28,7 +28,7 @@ const getListTechnology = async (req: NextApiReq, res: NextApiResponse) => {
         const list = await Technology.find();
         res.status(200).json({
             message: "با موفقیت ارسال شد",
-            data: { list },
+            data:  list ,
             status: true,
         });
     } catch (error: any) {

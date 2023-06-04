@@ -5,8 +5,9 @@ const apiRoutes = {
         signIn: "/auth/signin",
     },
     post: {
+        add:"/post/add",
         all: "/post?skip=1",
-        my_project:"/myproject",
+        my_project: "/myproject",
         action: {
             like: "/post/like",
             unlike: "/post/unlike",
@@ -19,6 +20,10 @@ const apiRoutes = {
     user: {
         allUser: "/user/all",
     },
+    masters: {
+        get_master: "/masters"
+    },
+    technology: { all: "/list/technology" },
     sheare: {
         sheareAll: "/sheare",
         add: "/sheare/add",

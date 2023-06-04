@@ -11,11 +11,12 @@ import CreateTechnology from "../components/admin/CreateTechnology";
 import { useRecoilValue } from "recoil";
 import { userState } from "../recoil/atom";
 import Head from "next/head";
+import useAddPostMutation from "../hooks/mutation/post/useAddPostMutation";
 
-const NewPost = ({ masters = [] }: any) => {
+const NewPost = () => {
+    const [step, setStep] = useState(0);
+    const { mutate, isLoading } = useAddPostMutation({setState:setStep})
     const [showTechnology, setShowTechnology] = useState(false);
-
-    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         file: null,
         title: "",
@@ -24,48 +25,13 @@ const NewPost = ({ masters = [] }: any) => {
         master: "",
         description: "",
     });
-    const [step, setStep] = useState(0);
-    const [messageApi, contextHolder] = message.useMessage();
     const userInfo = useRecoilValue(userState);
     const onSubmit = async (e: any) => {
         e.preventDefault();
         if (!formData.file || !formData.zip || formData.technologies.length === 0 || !formData.title || !formData.master) {
             return null;
         }
-        const form = new FormData();
-        form.append("file", formData.file!);
-        form.append("zip", formData.zip!);
-        form.append("master", formData.master);
-        form.append("title", formData.title);
-        form.append(
-            "type",
-            // @ts-ignore
-            formData?.file?.type?.split("/")[0]
-        );
-        form.append("technologies", JSON.stringify(formData.technologies!));
-        form.append("description", formData.description!);
-        form.append(
-            "student",
-            // @ts-ignore
-            userInfo.role === "USER" ? true : false
-        );
-        setLoading(true);
-
-        try {
-            const { data } = await fetchClient.post("/post/add", form);
-            if (data.status) {
-                setStep((prev) => prev + 1);
-            }
-            setLoading(false);
-        } catch (error: any) {
-            messageApi.open({
-                type: "error",
-                duration: 5,
-                content: error.response.data.message!,
-                className: "font-yekanBold !text-xs",
-            });
-            setLoading(false);
-        }
+        mutate(formData)
     };
 
     return (
@@ -73,7 +39,6 @@ const NewPost = ({ masters = [] }: any) => {
             <Head>
                 <title>دانشگاه شهر کرد | پست جدید</title>
             </Head>
-            {contextHolder}
             <SideBarMenu>
                 <div className="m-5 flex justify-between items-center">
                     <div className="flex gap-3 font-ExtraBold  items-center">
@@ -102,9 +67,8 @@ const NewPost = ({ masters = [] }: any) => {
                             onSubmit={onSubmit}
                             setFormData={setFormData}
                             formData={formData}
-                            masters={masters}
                             setStep={setStep}
-                            loading={loading}
+                            loading={isLoading}
                         />
                     )}
                     {step === 2 && <StepThree />}
@@ -115,27 +79,27 @@ const NewPost = ({ masters = [] }: any) => {
     );
 };
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-    const token = ctx.req.cookies["token"];
-    if (!token) {
-        return {
-            redirect: {
-                destination: "/",
-                permanent: false,
-            },
-        };
-    }
-    const res = await fetch(`${process.env.BASEURL}/masters`, {
-        headers: {
-            Authorization: token!,
-        },
-    });
-    const result = await res.json();
-    return {
-        props: {
-            masters: result?.data?.masters,
-        },
-    };
-};
+// export const getServerSideProps: GetServerSideProps = async (ctx) => {
+//     const token = ctx.req.cookies["token"];
+//     if (!token) {
+//         return {
+//             redirect: {
+//                 destination: "/",
+//                 permanent: false,
+//             },
+//         };
+//     }
+//     const res = await fetch(`${process.env.BASEURL}/masters`, {
+//         headers: {
+//             Authorization: token!,
+//         },
+//     });
+//     const result = await res.json();
+//     return {
+//         props: {
+//             masters: result?.data?.masters,
+//         },
+//     };
+// };
 
 export default NewPost;

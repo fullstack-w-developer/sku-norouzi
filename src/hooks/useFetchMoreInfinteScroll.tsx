@@ -1,5 +1,4 @@
 import React from "react";
-import { typePost } from "../tying";
 import fetchClient from "../utils/fetchClient";
 
 interface Props {

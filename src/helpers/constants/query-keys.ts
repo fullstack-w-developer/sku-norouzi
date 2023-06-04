@@ -10,3 +10,9 @@ export const USER = {
 export const SHEARE = {
     ALL: "get-sheare-post",
 };
+export const MASTER = {
+    ALL: "get-master-lis",
+};
+export const TECHNOLOGY = {
+    ALL: "get-technology-lis",
+};

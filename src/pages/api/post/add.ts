@@ -5,6 +5,7 @@ import multer from "multer";
 import Posts from "../../../../models/post";
 import connectDB from "../../../utils/connectDB";
 import { NextApiReq } from "../../../types/common";
+import { baseServer } from "../../../helpers/constants/env-variables";
 export const config = {
     api: {
         bodyParser: false,
@@ -41,7 +42,7 @@ const addNewPost = async (req: any, res: any) => {
             },
         });
         const upload = multer({ storage: storage, limits: { fileSize: maxSize } }).fields([{ name: "file" }, { name: "zip" }]);
-
+      
         await upload(req, res, async (err) => {
             if (err) {
                 return res.status(400).json({
@@ -52,12 +53,12 @@ const addNewPost = async (req: any, res: any) => {
 
             const post = new Posts({
                 file: {
-                    url: `${process.env.BASESERVER}/uploads/${req.files.file[0].filename}`,
+                    url: `${baseServer}/uploads/${req.files.file[0].filename}`,
                     id: "1",
                     type: req.files.file[0].mimetype.split("/")[0] === "image" ? "image" : "video",
                 },
                 zip: {
-                    url: `${process.env.BASESERVER}/uploads/${req.files.zip[0].filename}`,
+                    url: `${baseServer}/uploads/${req.files.zip[0].filename}`,
                     id: "1",
                 },
                 ...req.body,

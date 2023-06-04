@@ -22,7 +22,12 @@ export const logRequestedUrl = ({ baseURL, method, url }: AxiosRequestConfig) =>
 export const generateFormData = (obj: object) => {
     const data = new FormData();
     Object.entries(obj).forEach(([key, value]) => {
-        data.append(key, value);
+        if (key === "technologies") {
+
+            data.append(key, JSON.stringify(value));
+        } else {
+            data.append(key, value);
+        }
     });
     return { data, headers: { "Content-Type": "multipart/form-data" } };
 };
