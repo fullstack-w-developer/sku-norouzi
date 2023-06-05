@@ -1,73 +1,33 @@
 import { message, Modal, Spin } from "antd";
 import { useFormik } from "formik";
-import { useState } from "react";
 import { FaSignLanguage } from "react-icons/fa";
 import { MdOutlineClose } from "react-icons/md";
-import { typePropsTechnology } from "../../tying";
-import fetchClient from "../../utils/fetchClient";
 import Input from "../user/Input";
+import useTechnologyActionMutation from "../../hooks/mutation/actions/useTechnologyActionMutation";
+import useGlobalStroe from "../../stores/global-store";
 
-const CreateTechnology = ({ show, setShow, itemstechnology, setItemstechnology, info, setinfo }: typePropsTechnology) => {
+const CreateTechnology = () => {
+    const {createTechnology:{info,show},setCreateTechnology} = useGlobalStroe()
+    const { isLoading, mutate } = useTechnologyActionMutation()
     const listMasterValues = {
         name: info?.name ? info?.name : "",
     };
-    const [loading, setloading] = useState(false);
-    const [messageApi, contextHolder] = message.useMessage();
     const formik = useFormik({
         initialValues: listMasterValues,
         enableReinitialize: true,
         onSubmit: async (values: any, actions) => {
-            const filterList = itemstechnology && itemstechnology.filter((item) => item._id !== info._id);
-            try {
-                setloading(true);
-                if (info?.name) {
-                    const { data } = await fetchClient.put(`/list/technology/update?id=${info._id}`, values);
-                    if (data.status && setItemstechnology && filterList) {
-                        actions.resetForm();
-                        setItemstechnology([data.data, ...filterList]);
-                        messageApi.open({
-                            type: "success",
-                            duration: 5,
-                            content: "با موفقیت ویرایش شد",
-                            className: "font-yekanBold text-gray-700",
-                        });
-                    }
-                } else {
-                    const { data } = await fetchClient.post("/list/technology/add", values);
-                    actions.resetForm();
-                    messageApi.open({
-                        type: "success",
-                        duration: 5,
-                        content: "با موفقیت ایجاد شد",
-                        className: "font-yekanBold text-gray-700",
-                    });
-                    if (data.status && setItemstechnology && itemstechnology && setinfo) {
-                        setItemstechnology([data.data, ...itemstechnology]);
-                        setinfo({ name: "" });
-                    }
-                }
-                setShow(false);
-                setloading(false);
-            } catch (error: any) {
-                setloading(false);
-                messageApi.open({
-                    type: "error",
-                    duration: 5,
-                    content: error.response.data.message!,
-                    className: "font-yekanBold text-gray-700",
-                });
+            if (info?.name) {
+                mutate({ data: values, isUpdate: true, id: info?._id })
+            } else {
+                mutate({ data: values, isUpdate: false, isDelete: false })
             }
         },
     });
-    const onClose = () => {
-        if (setinfo) {
-            setinfo({});
-        }
-        setShow(false);
-    };
+
+
+    const onClose = ()=>setCreateTechnology({info:null,show:false})
     return (
         <>
-            {contextHolder}
             <Modal
                 onCancel={onClose}
                 footer={false}
@@ -77,9 +37,9 @@ const CreateTechnology = ({ show, setShow, itemstechnology, setItemstechnology, 
             >
                 <div>
                     <h1 className="text-center text-gray-700 font-yekanBold text-lg pt-5">
-                        {info?.first_name ? "ویرایش نام تکنولوژی" : "لطفا نام تکنولوژی را وارد کنید"}
+                        {info?.name ? "ویرایش نام تکنولوژی" : "لطفا نام تکنولوژی را وارد کنید"}
                     </h1>
-                    <Spin spinning={loading}>
+                    <Spin spinning={isLoading}>
                         <form onSubmit={formik.handleSubmit} className="container_auth !mt-5">
                             <Input
                                 input_ltr="ltr"
@@ -100,7 +60,7 @@ const CreateTechnology = ({ show, setShow, itemstechnology, setItemstechnology, 
                                     انصراف
                                 </button>
                                 <button
-                                    disabled={loading ? true : false}
+                                    disabled={isLoading ? true : false}
                                     className="bg-blue-500 font-yekanBold text-white text-xs w-full py-2 rounded-lg"
                                 >
                                     تائید

@@ -12,7 +12,6 @@ interface Props {
     formData: any;
     onSubmit: (e: any) => void;
     loading: boolean;
-    showTechnology: boolean;
 }
 const StepTwo = ({ setStep, formData, setFormData, onSubmit, loading }: Props) => {
     const {data:masters} = useGetAllMasterQuery()

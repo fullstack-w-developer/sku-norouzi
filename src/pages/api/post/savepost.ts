@@ -48,7 +48,16 @@ const getPosts = async (req: NextApiReq, res: NextApiResponse) => {
                 },
             },
             {
-                // @ts-ignore
+                $addFields: {
+                    isLiked: {
+                        $cond: [{ $in: [req.user?._id, "$liked"] }, true, false],
+                    },
+                    isBookmark: {
+                        $cond: [{ $in: [req.user?._id, "$saves"] }, true, false],
+                    },
+                },
+            },
+            {
                 $match: { saves: req.user._id },
             },
             {

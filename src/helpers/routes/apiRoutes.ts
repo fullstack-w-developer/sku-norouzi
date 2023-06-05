@@ -5,11 +5,12 @@ const apiRoutes = {
         signIn: "/auth/signin",
     },
     post: {
-        add:"/post/add",
+        add: "/post/add",
         all: "/post?skip=1",
-        post_waitong_master:"/masters/waitpost",
-        editPost_by_master:"/masters/verifypost",
+        post_waitong_master: "/masters/waitpost",
+        editPost_by_master: "/masters/verifypost",
         my_project: "/myproject",
+        save_post: "/post/savepost",
         action: {
             like: "/post/like",
             unlike: "/post/unlike",
@@ -25,7 +26,7 @@ const apiRoutes = {
     masters: {
         get_master: "/masters"
     },
-    technology: { all: "/list/technology" },
+    technology: { all: "/list/technology", add: "/list/technology/add", delete: "/list/technology/delete", update: "/list/technology/update" },
     sheare: {
         sheareAll: "/sheare",
         add: "/sheare/add",

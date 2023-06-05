@@ -37,3 +37,8 @@ export const editPost_by_master = async (data:Post) => {
     const formData = generateFormDataEditPost(data);
     return await client<GetAllPostRecponse>({ url, method:'PUT', ...formData });
 };
+
+export const getSavePost = async (page:number) => {
+    const url = getRoute({ route: `${routes.post.save_post}?skip=${page}` });
+    return await client<GetShearePostRecponse>({ url });
+};

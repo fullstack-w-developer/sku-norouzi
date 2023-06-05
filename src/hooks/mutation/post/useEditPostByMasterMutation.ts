@@ -1,4 +1,4 @@
-import { QueryClient, useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { editPost_by_master } from "../../../services/post";
 import { AddPost } from "../../../types/Post";
 import { errorToast, successToast } from "../../../helpers/utils/error";

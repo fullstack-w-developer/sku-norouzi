@@ -12,11 +12,15 @@ import { useRecoilValue } from "recoil";
 import { userState } from "../recoil/atom";
 import Head from "next/head";
 import useAddPostMutation from "../hooks/mutation/post/useAddPostMutation";
+import useGlobalStroe from "../stores/global-store";
+import { successToast } from "../helpers/utils/error";
+import useAuthStore from "../stores/auth-store";
 
 const NewPost = () => {
     const [step, setStep] = useState(0);
     const { mutate, isLoading } = useAddPostMutation({setState:setStep})
-    const [showTechnology, setShowTechnology] = useState(false);
+    const {user} = useAuthStore()
+    const  {setCreateTechnology} = useGlobalStroe()
     const [formData, setFormData] = useState({
         file: null,
         title: "",
@@ -24,12 +28,13 @@ const NewPost = () => {
         zip: null,
         master: "",
         description: "",
+        student:user?.role === "USER" ? true : false
     });
     const userInfo = useRecoilValue(userState);
     const onSubmit = async (e: any) => {
         e.preventDefault();
         if (!formData.file || !formData.zip || formData.technologies.length === 0 || !formData.title || !formData.master) {
-            return null;
+           successToast("لطفا تمام فیلد ها را پر کنید")
         }
         mutate(formData)
     };
@@ -45,10 +50,10 @@ const NewPost = () => {
                         <div className="w-3 h-3 rounded-full bg-sku"></div>
                         <p>پست جدید</p>
                     </div>
-                    {userInfo.role !== "USER" && (
+                    {user?.role !== "USER" && (
                         <div className="w-fit">
                             <button
-                                onClick={() => setShowTechnology(!showTechnology)}
+                                onClick={()=>setCreateTechnology({info:null,show:true})}
                                 className="bg-sku text-white text-xs px-2 py-2 rounded-lg"
                             >
                                 تعریف فناوری جدید
@@ -63,7 +68,6 @@ const NewPost = () => {
                     {step === 0 && <StepOne setFormData={setFormData} formData={formData} setStep={setStep} />}
                     {step === 1 && (
                         <StepTwo
-                            showTechnology={showTechnology}
                             onSubmit={onSubmit}
                             setFormData={setFormData}
                             formData={formData}
@@ -74,7 +78,7 @@ const NewPost = () => {
                     {step === 2 && <StepThree />}
                 </div>
             </SideBarMenu>
-            <CreateTechnology show={showTechnology} setShow={setShowTechnology} />
+            <CreateTechnology  />
         </>
     );
 };
